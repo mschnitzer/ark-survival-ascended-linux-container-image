@@ -3,7 +3,7 @@ services:
   server:
     container_name: asa-server
     hostname: asa-server
-    entrypoint: "/bin/bash -c 'rm -f /usr/share/app/tmp/pids/server.pid ; sleep 50000000'"
+    entrypoint: "/usr/bin/start_server"
     user: gameserver
     image: "mschnitzer/asa-linux-server"
     stdin_open: true
