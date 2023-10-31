@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+  server:
+    container_name: asa-server
+    hostname: asa-server
+    entrypoint: "/bin/bash -c 'rm -f /usr/share/app/tmp/pids/server.pid ; sleep 50000000'"
+    user: gameserver
+    image: "mschnitzer/asa-linux-server"
+    stdin_open: true
+    tty: true
+    ports:
+      - 0.0.0.0:7777:7777/udp
+      - 0.0.0.0:27020:27020/tcp
+    depends_on:
+      - set-permissions
+    volumes:
+      - steam:/home/gameserver/Steam:rw
+      - steamcmd:/home/gameserver/steamcmd:rw
+      - server-files:/home/gameserver/server-files:rw
+    networks:
+      default:
+  set-permissions:
+    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files'"
+    user: root
+    image: "opensuse/leap"
+    volumes:
+      - steam:/steam:rw
+      - steamcmd:/steamcmd:rw
+      - server-files:/server-files:rw
+volumes:
+  steam:
+  steamcmd:
+  server-files:
+networks:
+  default:
+    attachable: true

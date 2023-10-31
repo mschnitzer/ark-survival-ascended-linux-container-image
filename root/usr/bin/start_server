@@ -1,0 +1,46 @@
+#!/bin/bash
+# download steamcmd if necessary
+if [ ! -d "/home/gameserver/steamcmd/linux32" ]; then
+  cd /home/gameserver/steamcmd
+	wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+  tar xfvz steamcmd_linux.tar.gz
+fi
+
+# download/update server files
+cd /home/gameserver/steamcmd
+./steamcmd.sh +force_install_dir /home/gameserver/server-files +login anonymous +app_update 2430930 validate +quit
+
+PROTON_ARCHIVE_PATH=$(ls /usr/share/proton/*)
+PROTON_ARCHIVE_NAME=$(basename $(ls /usr/share/proton/*))
+PROTON_DIR_NAME=${PROTON_ARCHIVE_NAME%.tar.gz}
+STEAM_COMPAT_DATA=/home/gameserver/server-files/steamapps/compatdata
+STEAM_COMPAT_DIR=/home/gameserver/Steam/compatibilitytools.d
+ASA_COMPAT_DATA=$STEAM_COMPAT_DATA/2430930
+ASA_BINARY_DIR="/home/gameserver/server-files/ShooterGame/Binaries/Win64"
+START_PARAMS_FILE="/home/gameserver/server-files/start-parameters"
+
+# install proton if necessary
+if [ ! -d "$STEAM_COMPAT_DIR/$PROTON_DIR_NAME" ]; then
+  mkdir -p $STEAM_COMPAT_DIR
+  tar -xf /usr/share/proton/$PROTON_ARCHIVE_NAME -C $STEAM_COMPAT_DIR
+fi
+
+# install proton compat game data
+if [ ! -d "$ASA_COMPAT_DATA" ]; then
+  mkdir -p $STEAM_COMPAT_DATA
+  cp -r $STEAM_COMPAT_DIR/$PROTON_DIR_NAME/files/share/default_pfx $ASA_COMPAT_DATA
+fi
+
+# Create start-parameters files
+if [ ! -f "$START_PARAMS_FILE" ]; then
+  echo -n "TheIsland_WP?listen -WinLiveMaxPlayers=35" > $START_PARAMS_FILE
+fi
+
+echo "Starting the ARK: Survival Ascended dedicated server now..."
+
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+export STEAM_COMPAT_CLIENT_INSTALL_PATH=/home/gameserver/Steam
+export STEAM_COMPAT_DATA_PATH=$ASA_COMPAT_DATA
+
+cd "$ASA_BINARY_DIR" 
+$STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run ArkAscendedServer.exe $(cat /home/gameserver/server-files/start-parameters)
