@@ -34,7 +34,7 @@ docker pull mschnitzer/asa-linux-server
 
 ### 4. Create the Docker Compose config
 
-Now create a directory at the location of your choice and create a file called `docker-compose.yml`. In that file, copy the contents of [my docker-compose.yml](invalid) example.
+Now create a directory at the location of your choice and create a file called `docker-compose.yml`. In that file, copy the contents of [my docker-compose.yml](https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/blob/main/docker-compose.yml) example.
 
 ### 5. First server start
 
