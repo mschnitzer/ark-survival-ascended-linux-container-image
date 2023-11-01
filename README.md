@@ -2,7 +2,24 @@
 
 This repository provides a step by step guide for Linux administrators to host ARK: Survival Ascended servers on Linux using a docker image.
 
+## Table of Contents
+
+* [Installation](#installation)
+  * [Install Docker & Docker Compose](#1-install-docker--docker-compose)
+  * [Start docker daemon](#2-start-docker-daemon)
+  * [Pull the docker image](#3-pull-the-docker-image)
+  * [Create the Docker Compose config](#4-create-the-docker-compose-config)
+  * [First server start](#5-first-server-start)
+  * [Server configuration](#6-server-configuration)
+  * [Changing the start parameters AND the player limit](#7-changing-the-start-parameters-and-the-player-limit)
+* [Port forwarding?](#port-forwarding)
+* [Start/Restart/Stop](#startrestartstop)
+* [Found an Issue or Bug?](#found-an-issue-or-bug)
+* [Credits](#credits)
+
 ## Installation
+
+Required Linux experience: Beginner
 
 In theory, you can use these steps on any Linux system where Docker is installed.
 
