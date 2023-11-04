@@ -16,6 +16,12 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Changing the game port and RCON port](#changing-the-game-port-and-rcon-port)
 * [Start/Restart/Stop](#startrestartstop)
 * [Setting up a second server](#setting-up-a-second-server)
+* [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
+  * [RUMOR (not confirmed 100%): Server too far away/in a different timezone](#rumor-not-confirmed-100-server-too-far-awayin-a-different-timezone)
+  * [Your server has multiple IPv4 addresses](#your-server-has-multiple-ipv4-addresses)
+    * [Debugging with curl](#debugging-with-curl)
+    * [How to customize your routing?](#how-to-customize-your-routing)
+    * [Making your iptable rules persistent](#making-your-iptable-rules-persistent)
 * [Found an Issue or Bug?](#found-an-issue-or-bug)
 * [Credits](#credits)
 
@@ -254,6 +260,109 @@ That's it! Your second server is now running.
 
 If you want to spin up more servers, you need to add more entries to the `docker-compose.yml` file. The following sections need to be edited: `services` and `volumes`. Make sure that you adjust all suffixes and replace them with a new one
 (e.g. `-3` now) for the newly added entries.
+
+## Addressing "Connection Timeout" issues
+
+First of all, try to connect through the ingame console to your server. In many cases this works, but only connecting through the server browser causes an issue. Try to run the command `open $IP:$PORT` and test whether you
+can connect to it.
+
+If that is NOT working and you are having a home setup and not a VPS cloud setup, make sure your ports are REALLY open. This needs to be configured on your router. The ports that need to be opened are listed above in this README.
+Please refer to the documentation of your router how to configure port forwarding properly.
+
+If you can connect to your server through the console command, but not via the sever browser, it is very likely that you are running into one of these issues:
+
+### RUMOR (not confirmed 100%): Server too far away/in a different timezone
+
+There seems to be a bug in the server software that prevents players to connect to a server not close to their timezone. I need further evidence for this, so please open an issue on GitHub and I will build a customized container image for you to test whether that addresses this issue.
+
+### Your server has multiple IPv4 addresses
+
+If your server has multiple IPv4 addresses and you bound your ASA server to one of the secondary ones, by default, docker routes your traffic always through your primary network interface, which would cause the server browser to list your
+server under the wrong IP address.
+
+For example:
+
+Your primary IP is: `255.255.300.300`
+Your secondary one is: `255.255.400.400`
+
+You adjusted the `docker-compose.yml` file in a way where it binds the ports on interface `255.255.400.400`. However, if your ASA server communicates with the internet and announces itself to the ASA server list, the ASA master server that manages the
+server browser entries, would see the requests coming from `255.255.300.300` as this is your primary network interface.
+
+This issue can be solved by forcing the traffic to be routed manually through your secondary network interface.
+
+But before we start fixing it, you should make sure that this is really the issue.
+
+#### Debugging with curl
+
+1. Log in to the container `docker exec -ti -u root asa-server-1 bash`
+2. Run `zypper --no-gpg-checks ref`
+3. Install curl `zypper in -y curl`
+4. Run `curl icanhazip.com` (`icanhazip.com` is a service that tells you from what ip address it received traffic from)
+
+If the service responds with an IP that you have not assigned to the ASA server in the `docker-compose.yml` file, then it's very likely that this is the reason why you are getting a "Connection Timeout" error.
+Please continue following the instructions below.
+
+#### How to customize your routing?
+
+You need to adjust the `docker-compose.yml` file and add `com.docker.network.bridge.enable_ip_masquerade: 'false'` to the `networks` section, so that it looks like this:
+
+```yml
+networks:
+  asa-network:
+    attachable: true
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: 'asanet'
+      com.docker.network.bridge.enable_ip_masquerade: 'false'
+```
+
+Now stop the ASA server if it's running:
+
+```
+docker stop asa-server-1
+```
+
+Delete the docker network interface and the container, so that they can be recreated:
+
+```
+docker rm asa-server-1
+docker network rm asa-server_asa-network
+```
+
+Now run `docker-compose up -d` from within the directory where your `docker-compose.yml` is located at.
+
+Once done and the container is up again, inspect the network to find its subnet:
+
+```
+docker network inspect asa-server_asa-network | grep Subnet
+```
+
+Now customize the routing of the container through `iptables`, where `$SUBNET` needs to be replaced with the subnet from the previous command (including the `/24` or `/16` - whatever it is in your case):
+
+```
+iptables -t nat -A POSTROUTING -s $SUBNET ! -o asanet -j SNAT --to-source $YOUR_SECONDARY_IP_USED_BY_ASA
+```
+
+Once done, connect to your container and test that the remote IP is the right one, by following the steps with `curl` again.
+
+Now try to connect to your server through the server browser. If that is not solving your problem or if the IP is still the wrong one, open a GitHub issue. If it solves your problem, continue with the
+next section to make the `iptables` adjustments persistent after reboot.
+
+#### Making your iptable rules persistent
+
+Changes to the `iptables` will get reverted after reboot. You can make them persistent by saving the current state:
+
+```
+iptables-save > /root/iptables
+```
+
+Now run `crontab -e` and add the following entry:
+
+```
+@reboot /bin/bash -c 'sleep 15 ; /usr/sbin/iptables-restore < /root/iptables'
+```
+
+Save the cronjob and test it by rebooting your system. You can test whether it has worked by following the `curl` steps from above again.
 
 ## Found an Issue or Bug?
 
