@@ -31,16 +31,12 @@ if [ ! -d "$ASA_COMPAT_DATA" ]; then
   cp -r $STEAM_COMPAT_DIR/$PROTON_DIR_NAME/files/share/default_pfx $ASA_COMPAT_DATA
 fi
 
-# Create start-parameters files
-if [ ! -f "$START_PARAMS_FILE" ]; then
-  echo -n "TheIsland_WP?listen -WinLiveMaxPlayers=35" > $START_PARAMS_FILE
-fi
-
-echo "Starting the ARK: Survival Ascended dedicated server now..."
+echo "Starting the ARK: Survival Ascended dedicated server..."
+echo "Start parameters: $ASA_START_PARAMS"
 
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 export STEAM_COMPAT_CLIENT_INSTALL_PATH=/home/gameserver/Steam
 export STEAM_COMPAT_DATA_PATH=$ASA_COMPAT_DATA
 
 cd "$ASA_BINARY_DIR" 
-$STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run ArkAscendedServer.exe $(cat /home/gameserver/server-files/start-parameters)
+$STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run ArkAscendedServer.exe $ASA_START_PARAMS
