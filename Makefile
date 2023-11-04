@@ -1,11 +1,15 @@
-.PHONY: prepare build load
+.PHONY: prepare build build-development load
 
 prepare:
 	- sudo rm -rf build-results
 	- mkdir -p build-results
 
 build: prepare
-	- sudo kiwi-ng --color-output --debug system build --target-dir build-results/ --description .
+	- sudo kiwi-ng --profile stable --color-output --debug system build --target-dir build-results/ --description .
+	- sudo xz --threads 4 -z build-results/*.tar
+
+build-development: prepare
+	- sudo kiwi-ng --profile development --color-output --debug system build --target-dir build-results/ --description .
 	- sudo xz --threads 4 -z build-results/*.tar
 
 load:
