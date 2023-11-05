@@ -8,4 +8,20 @@ usermod -u 25000 gameserver
 
 chmod 0755 /usr/bin/start_server
 
+mkdir -p /home/gameserver/mods-to-be-installed
+chown -R 25000:25000 /home/gameserver/mods-to-be-installed
+
+if [ "$kiwi_profiles" = "development" ]; then
+  # will be mounted to ease development
+  rm -r /usr/share/asa-ctrl
+  gem.ruby3.3 install byebug
+else
+  chmod 0755 /usr/share/asa-ctrl/main.rb
+
+  cd /usr/share/asa-ctrl
+  bundle.ruby3.3
+fi
+
+ln -s /usr/share/asa-ctrl/main.rb /usr/bin/asa-ctrl
+
 exit 0

@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    slop (4.10.1)
+
+PLATFORMS
+  x86_64-linux-gnu
+
+DEPENDENCIES
+  slop (= 4.10.1)
+
+BUNDLED WITH
+   2.5.0.dev

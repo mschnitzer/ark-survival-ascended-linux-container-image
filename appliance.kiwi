@@ -30,27 +30,35 @@
   <users>
     <user name="gameserver" password="" home="/home/gameserver" groups="gameserver" id="25000"/>
   </users>
-  <repository type="rpm-md" alias="repo-backports-update" imageinclude="true" priority="99">
+  <repository type="rpm-md" alias="repo-backports-update" imageinclude="true">
     <source path="http://download.opensuse.org/update/leap/15.5/backports/"/>
   </repository>
-  <repository type="rpm-md" alias="repo-oss" imageinclude="true" priority="99">
+  <repository type="rpm-md" alias="repo-oss" imageinclude="true">
     <source path="http://download.opensuse.org/distribution/leap/15.5/repo/oss/"/>
   </repository>
-  <repository type="rpm-md" alias="repo-sle-update" imageinclude="true" priority="99">
+  <repository type="rpm-md" alias="repo-sle-update" imageinclude="true">
     <source path="http://download.opensuse.org/update/leap/15.5/sle/"/>
   </repository>
-  <repository type="rpm-md" alias="repo-update" imageinclude="true" priority="99">
+  <repository type="rpm-md" alias="repo-update" imageinclude="true">
     <source path="http://download.opensuse.org/update/leap/15.5/oss"/>
+  </repository>
+  <repository type="rpm-md" alias="ruby-repo" imageinclude="true">
+    <source path="https://download.opensuse.org/repositories/devel:/languages:/ruby/15.5"/>
   </repository>
   <packages type="image">
     <package name="patterns-base-base"/>
     <package name="glibc-locale-base"/>
-    <!-- application dependencies -->
+    <!-- application dependencies: ASA -->
     <package name="libgcc_s1-32bit"/>
     <package name="python3"/>
     <package name="wget"/>
     <package name="tar"/>
     <package name="libfreetype6"/>
+    <!-- application dependencies: asa-ctrl -->
+    <package name="ruby3.3"/>
+    <package name="ruby3.3-devel"/>
+    <package name="make"/>
+    <package name="gcc-c++"/>
   </packages>
   <packages type="image" profiles="development">
     <package name="vim"/>
@@ -80,5 +88,10 @@
     <package name="dracut"/>
     <package name="squashfs"/>
     <package name="glibc-locale"/>
+  </packages>
+  <packages type="delete" profiles="stable">
+    <package name="ruby3.3-devel"/>
+    <package name="make"/>
+    <package name="gcc-c++"/>
   </packages>
 </image>
