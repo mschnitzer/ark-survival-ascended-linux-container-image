@@ -14,5 +14,10 @@ module AsaCtrl
     def self.print_usage
       puts "Usage: asa-ctrl [mods] (--help)"
     end
+
+    def self.exit_with_error!(message, code)
+      $stderr.puts "Error: #{message}"
+      exit! code
+    end
   end
 end
