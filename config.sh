@@ -7,6 +7,7 @@ groupmod -g 25000 gameserver
 usermod -u 25000 gameserver
 
 chmod 0755 /usr/bin/start_server
+chmod 0755 /usr/bin/cli-asa-mods
 
 if [ "$kiwi_profiles" = "development" ]; then
   # will be mounted to ease development

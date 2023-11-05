@@ -24,6 +24,8 @@ STEAM_COMPAT_DIR=/home/gameserver/Steam/compatibilitytools.d
 ASA_COMPAT_DATA=$STEAM_COMPAT_DATA/2430930
 ASA_BINARY_DIR="/home/gameserver/server-files/ShooterGame/Binaries/Win64"
 START_PARAMS_FILE="/home/gameserver/server-files/start-parameters"
+MODS="$(/usr/bin/cli-asa-mods)"
+ASA_START_PARAMS="$ASA_START_PARAMS $MODS"
 
 # install proton if necessary
 if [ ! -d "$STEAM_COMPAT_DIR/$PROTON_DIR_NAME" ]; then
