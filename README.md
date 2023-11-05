@@ -15,6 +15,8 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Port forwarding?](#port-forwarding)
 * [Changing the game port and RCON port](#changing-the-game-port-and-rcon-port)
 * [Start/Restart/Stop](#startrestartstop)
+* [Server Administration](#server-administration)
+  * [Debug Mode](#debug-mode)
 * [Setting up a second server](#setting-up-a-second-server)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
   * [RUMOR (not confirmed 100%): Server too far away/in a different timezone](#rumor-not-confirmed-100-server-too-far-awayin-a-different-timezone)
@@ -239,6 +241,45 @@ You can also use the native docker commands, where you do not need to be in the 
 So in case you edited the `docker-compose.yml` file (e.g. because you adjusted the start parameters), you need to use `docker-compose` commands instead.
 ```
 docker start/restart/stop asa-server-1
+```
+
+## Server Administration
+
+### Debug Mode
+
+Sometimes you want to test something inside the container without starting the ASA server. The debug mode can be enabled by changing `- ENABLE_DEBUG=0` to `1` in the `docker-compose.yml` file.
+Once done, the result will look like this:
+
+```yml
+...
+version: "3.3"
+services:
+  asa-server-1:
+    container_name: asa-server-1
+    hostname: asa-server-1
+    entrypoint: "/usr/bin/start_server"
+    user: gameserver
+    image: "mschnitzer/asa-linux-server:latest"
+    environment:
+      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50
+      - ENABLE_DEBUG=1
+...
+```
+
+Now run `docker-compose up -d` and the container will just start without launching the server or validating server files.
+
+Check if the container launched in debug mode by running `docker logs -f asa-server-1` and check whether it's saying "Entering debug mode...". If that's the case, you are good.
+
+You can enter the shell of your server by running
+
+```
+docker exec -ti asa-server-1 bash
+```
+
+If you need root access run
+
+```
+docker exec -ti -u root asa-server-1 bash
 ```
 
 ## Setting up a second server

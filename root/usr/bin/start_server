@@ -1,4 +1,10 @@
 #!/bin/bash
+if [ "$ENABLE_DEBUG" = "1" ]; then
+  echo "Entering debug mode..."
+  sleep 999999999999
+  exit 0
+fi
+
 # download steamcmd if necessary
 if [ ! -d "/home/gameserver/steamcmd/linux32" ]; then
   cd /home/gameserver/steamcmd
