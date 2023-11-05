@@ -10,7 +10,7 @@
     <profile name="development" description="building docker tag: development"/>
   </profiles>
   <preferences>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packagemanager>zypper</packagemanager>
     <rpm-excludedocs>true</rpm-excludedocs>
     <rpm-check-signatures>false</rpm-check-signatures>
