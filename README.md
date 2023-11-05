@@ -17,6 +17,8 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Start/Restart/Stop](#startrestartstop)
 * [Server Administration](#server-administration)
   * [Debug Mode](#debug-mode)
+  * [Managing Mods](#managing-mods)
+    * [Prerequisites](#prerequisites)
 * [Setting up a second server](#setting-up-a-second-server)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
   * [RUMOR (not confirmed 100%): Server too far away/in a different timezone](#rumor-not-confirmed-100-server-too-far-awayin-a-different-timezone)
@@ -281,6 +283,12 @@ If you need root access run
 ```
 docker exec -ti -u root asa-server-1 bash
 ```
+
+### Managing Mods
+
+#### Prerequisites
+
+Make sure that the ASA server is stopped and that the container is launched in [debug mode](#debug-mode).
 
 ## Setting up a second server
 
