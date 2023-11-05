@@ -286,9 +286,28 @@ docker exec -ti -u root asa-server-1 bash
 
 ### Managing Mods
 
+The mod management tool delivered by this container is currently considered a beta. If you are experiencing any issues following these steps, please open a GitHub issue. The tool is present starting from version `1.2.0` of this container
+image.
+
 #### Prerequisites
 
-Make sure that the ASA server is stopped and that the container is launched in [debug mode](#debug-mode).
+Make sure that the ASA server is stopped and that the container is launched in [debug mode](#debug-mode) before you proceed!
+
+#### Installing Mods
+
+##### 1. Downloading Mods
+
+Mods can be downloaded from [CurseForge](https://www.curseforge.com/ark-survival-ascended). Once you downloaded the mods you want to install, upload them to your VPS cloud server, so that they can be moved to your container eventually.
+
+##### 2. Installation
+
+Mods are provided as a zip archive and should not be extracted by yourself, as the mod management tool provided by this container image will take care of that for you.
+
+Copy the downloaded archives to your containers `mods-to-be-installed` directory.
+
+```
+docker cp /vps/path/to/my/mod.zip asa-server-1:/home/gameserver/mods-to-be-installed
+```
 
 ## Setting up a second server
 
