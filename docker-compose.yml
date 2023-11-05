@@ -51,14 +51,6 @@ services:
 #      - server-files-2:/home/gameserver/server-files:rw
 #    networks:
 #      asa-network:
-  set-permissions-1:
-    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files'"
-    user: root
-    image: "opensuse/leap"
-    volumes:
-      - steam-1:/steam:rw
-      - steamcmd-1:/steamcmd:rw
-      - server-files-1:/server-files:rw
 #  set-permissions-2:
 #    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files'"
 #    user: root
