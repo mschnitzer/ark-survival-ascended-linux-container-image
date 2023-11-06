@@ -7,6 +7,7 @@
   </description>
   <profiles>
     <profile name="stable" description="building docker tag: latest"/>
+    <profile name="beta" description="building docker tag: beta"/>
     <profile name="development" description="building docker tag: development"/>
   </profiles>
   <preferences>
@@ -20,6 +21,11 @@
   <preferences profiles="stable">
     <type image="docker">
       <containerconfig tag="latest" workingdir="/home/gameserver" name="mschnitzer/asa-linux-server"/>
+    </type>
+  </preferences>
+  <preferences profiles="beta">
+    <type image="docker">
+      <containerconfig tag="beta" workingdir="/home/gameserver" name="mschnitzer/asa-linux-server"/>
     </type>
   </preferences>
   <preferences profiles="development">
@@ -89,7 +95,7 @@
     <package name="squashfs"/>
     <package name="glibc-locale"/>
   </packages>
-  <packages type="delete" profiles="stable">
+  <packages type="delete" profiles="stable beta">
     <package name="ruby3.3-devel"/>
     <package name="make"/>
     <package name="gcc-c++"/>
