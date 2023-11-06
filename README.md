@@ -18,6 +18,7 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Server Administration](#server-administration)
   * [Debug Mode](#debug-mode)
   * [Applying server updates](#applying-server-updates)
+  * [Daily restarts](#daily-restarts)
   * [Executing RCON commands](#executing-rcon-commands)
   * [Managing Mods](#managing-mods)
     * [Prerequisites](#prerequisites)
@@ -302,6 +303,35 @@ In general you can check when the latest server update was published by Wildcard
 tells you when the last update was rolled out for the server software.
 
 If you have any doubts on this, open a GitHub issue.
+
+### Daily restarts
+
+As `root` user of your server (or any other user that is member of the `docker` group) open your crontab configuration:
+
+```
+crontab -e
+```
+
+Add the following lines to it:
+```
+30 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'serverchat Server restart in 30 minutes'
+50 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'serverchat Server restart in 10 minutes'
+57 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'serverchat Server restart in 3 minutes'
+58 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'saveworld'
+0 4 * * * docker restart asa-server-1
+```
+
+Explanation:
+* Line 1: Every day at 03:30am of your server's timezone, a message will be sent to all players announcing a restart in 30 minutes.
+* Line 2: Every day at 03:50am of your server's timezone, a message will be sent to all players announcing a restart in 10 minutes.
+* Line 3: Every day at 03:57am of your server's timezone, a message will be sent to all players announcing a restart in 3 minutes.
+* Line 4: Every day at 03:58am of your server's timezone, the server saves the world before the restart happens.
+* Line 5: Every day at 04:00am of your server's timezone, the ASA server gets restarted and installs pending updates from Steam.
+
+Read more about the crontab syntax [here](https://www.adminschoice.com/crontab-quick-reference).
+
+**NOTE:** The first 4 lines execute RCON commands, which requires you to have a working RCON setup. Please follow the instructions in section "[Executing RCON commands](#executing-rcon-commands)" to
+ensure you can execute RCON commands.
 
 ### Executing RCON commands
 
