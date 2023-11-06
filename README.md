@@ -440,4 +440,4 @@ Create a ticket on GitHub, I will do my best to fix it. Feel free to open a pull
 
 * Glorius Eggroll - For his version of Proton to run the ARK Windows binaries on Linux ([click](https://github.com/GloriousEggroll/proton-ge-custom))
 * cdp1337 - For his Linux guide of installing Proton and running ARK on Linux ([click](https://github.com/cdp1337/ARKSurvivalAscended-Linux))
-
+* tesfabpel - For his Valve RCON implementation in Ruby ([click](https://github.com/tesfabpel/srcon-rb))
