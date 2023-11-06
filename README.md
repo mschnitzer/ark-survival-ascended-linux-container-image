@@ -17,6 +17,7 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Start/Restart/Stop](#startrestartstop)
 * [Server Administration](#server-administration)
   * [Debug Mode](#debug-mode)
+  * [Executing RCON commands](#executing-rcon-commands)
   * [Managing Mods](#managing-mods)
     * [Prerequisites](#prerequisites)
 * [Setting up a second server](#setting-up-a-second-server)
@@ -283,6 +284,27 @@ If you need root access run
 ```
 docker exec -ti -u root asa-server-1 bash
 ```
+
+### Executing RCON commands
+
+You can run RCON commands by accessing the `rcon` subcommand of the `asa-ctrl` tool which is shipped with the container image. There's no need to enter your server password, IP, or RCON port manually. As long as
+you have set your RCON password and port, either as a start parameter or in the `GameUserSettings.ini` file of your server, `asa-ctrl` is able to figure those details out by itself.
+
+The following variables need to be present either as start parameter or in `GameUserSettings.ini` under the `[ServerSettings]` section:
+
+```
+RCONEnabled=True
+ServerAdminPassword=mysecretpass
+RCONPort=27020
+```
+
+Example:
+
+```
+docker exec -t asa-server-1 asa-ctrl rcon --exec saveworld
+```
+
+**NOTE:** As opposed to ingame cheat commands, you must not put `admincheat` or `cheat` in front of the command.
 
 ### Managing Mods
 
