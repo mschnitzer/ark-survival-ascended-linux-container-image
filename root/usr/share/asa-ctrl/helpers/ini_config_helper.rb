@@ -8,7 +8,7 @@ module AsaCtrl
       self.parse('/home/gameserver/server-files/ShooterGame/Saved/Config/WindowsServer/Game.ini')
     end
 
-    def self.parse!(path)
+    def self.parse(path)
       return unless File.exist?(path)
 
       IniParse.parse(File.read(path))
