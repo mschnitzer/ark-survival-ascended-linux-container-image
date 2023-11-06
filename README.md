@@ -17,6 +17,7 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Start/Restart/Stop](#startrestartstop)
 * [Server Administration](#server-administration)
   * [Debug Mode](#debug-mode)
+  * [Applying server updates](#applying-server-updates)
   * [Executing RCON commands](#executing-rcon-commands)
   * [Managing Mods](#managing-mods)
     * [Prerequisites](#prerequisites)
@@ -284,6 +285,23 @@ If you need root access run
 ```
 docker exec -ti -u root asa-server-1 bash
 ```
+
+### Applying server updates
+
+Updates will be automatically downloaded or applied once you restart the container with ...
+
+```
+docker restart asa-server-1
+```
+
+It is totally possible that after a restart and applying all updates, the client is still one or more versions ahead. This is because Wildcard does sometimes run client-only updates, since not all
+updates are affecting the server software. This is not a problem at all. As long as you can connect to your server, everything is fine. The server software checks for incompatible client
+versions anyway.
+
+In general you can check when the latest server update was published by Wildcard, by checking [this link](https://steamdb.info/app/2430930/depots/). The section mentioning the last update of the `public` branch
+tells you when the last update was rolled out for the server software.
+
+If you have any doubts on this, open a GitHub issue.
 
 ### Executing RCON commands
 
