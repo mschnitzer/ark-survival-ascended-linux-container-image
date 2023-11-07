@@ -349,7 +349,7 @@ RCONPort=27020
 Example:
 
 ```
-docker exec -t asa-server-1 asa-ctrl rcon --exec saveworld
+docker exec -t asa-server-1 asa-ctrl rcon --exec 'saveworld'
 ```
 
 **NOTE:** As opposed to ingame cheat commands, you must not put `admincheat` or `cheat` in front of the command.
