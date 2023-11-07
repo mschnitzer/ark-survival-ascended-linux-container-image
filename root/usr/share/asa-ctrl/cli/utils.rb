@@ -12,7 +12,7 @@ module AsaCtrl
     end
 
     def self.print_usage
-      puts "Usage: asa-ctrl [rcon|mods] (--help)"
+      puts "Usage: asa-ctrl [rcon] (--help)"
     end
 
     def self.exit_with_error!(message, code)

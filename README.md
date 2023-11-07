@@ -20,8 +20,6 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Applying server updates](#applying-server-updates)
   * [Daily restarts](#daily-restarts)
   * [Executing RCON commands](#executing-rcon-commands)
-  * [Managing Mods](#managing-mods)
-    * [Prerequisites](#prerequisites)
 * [Setting up a second server](#setting-up-a-second-server)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
   * [RUMOR (not 100% confirmed): Server too far away/in a different timezone](#rumor-not-100-confirmed-server-too-far-awayin-a-different-timezone)
@@ -353,31 +351,6 @@ docker exec -t asa-server-1 asa-ctrl rcon --exec 'saveworld'
 ```
 
 **NOTE:** As opposed to ingame cheat commands, you must not put `admincheat` or `cheat` in front of the command.
-
-### Managing Mods
-
-The mod management tool delivered by this container is currently considered a beta. If you are experiencing any issues following these steps, please open a GitHub issue. The tool is present starting from version `1.2.0` of this container
-image.
-
-#### Prerequisites
-
-Make sure that the ASA server is stopped and that the container is launched in [debug mode](#debug-mode) before you proceed!
-
-#### Installing Mods
-
-##### 1. Downloading Mods
-
-Mods can be downloaded from [CurseForge](https://www.curseforge.com/ark-survival-ascended). Once you downloaded the mods you want to install, upload them to your VPS cloud server, so that they can be moved to your container eventually.
-
-##### 2. Installation
-
-Mods are provided as a zip archive and should not be extracted by yourself, as the mod management tool provided by this container image will take care of that for you.
-
-Copy the downloaded archives to your containers `mods-to-be-installed` directory.
-
-```
-docker cp /vps/path/to/my/mod.zip asa-server-1:/home/gameserver/mods-to-be-installed
-```
 
 ## Setting up a second server
 
