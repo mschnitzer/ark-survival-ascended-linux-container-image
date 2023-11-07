@@ -28,6 +28,15 @@ main_args = Slop.parse(AsaCtrl::Cli.passed_command(ARGV)) do |args|
     AsaCtrl::Cli::RconInterface.new(opts)
   end
 
+  args.on 'mods', 'Interface to manage mods' do
+    opts = Slop.parse(ARGV[1..-1]) do |opt|
+      opt.integer '--enable', 'Mod ID/CurseForge Project ID of the mod'
+      opt.bool AsaCtrl::Cli::HELP_ARGUMENT, AsaCtrl::Cli::HELP_DESCRIPTION
+    end
+
+    AsaCtrl::Cli::ModsInterface.new(opts)
+  end
+
   args.on AsaCtrl::Cli::HELP_ARGUMENT, AsaCtrl::Cli::HELP_DESCRIPTION do
     # handled once slop exits
   end
