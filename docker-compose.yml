@@ -7,7 +7,7 @@ services:
     user: gameserver
     image: "mschnitzer/asa-linux-server:latest"
     environment:
-      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50
+      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -ClusterDirOverride="/home/gameserver/cluster-shared" #PUT clusterid=SECRET here to enable transfers
       - ENABLE_DEBUG=0
     ports:
       # Game port for player connections through the server browser
@@ -20,10 +20,11 @@ services:
       - steam-1:/home/gameserver/Steam:rw
       - steamcmd-1:/home/gameserver/steamcmd:rw
       - server-files-1:/home/gameserver/server-files:rw
+      - cluster-shared:/home/gameserver/cluster-shared:rw
     networks:
       asa-network:
   set-permissions-1:
-    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files'"
+    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files ; chown -R 25000:25000 /cluster-shared'"
     user: root
     image: "opensuse/leap"
     volumes:
@@ -37,7 +38,7 @@ services:
 #    user: gameserver
 #    image: "mschnitzer/asa-linux-server:latest"
 #    environment:
-#      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7778?RCONPort=27021?RCONEnabled=True -WinLiveMaxPlayers=50
+#      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7778?RCONPort=27021?RCONEnabled=True -WinLiveMaxPlayers=50 -ClusterDirOverride="/home/gameserver/cluster-shared" #PUT clusterid=SECRET here to enable transfers
 #    ports:
 #      # Game port for player connections through the server browser
 #      - 0.0.0.0:7778:7778/udp
@@ -49,10 +50,11 @@ services:
 #      - steam-2:/home/gameserver/Steam:rw
 #      - steamcmd-2:/home/gameserver/steamcmd:rw
 #      - server-files-2:/home/gameserver/server-files:rw
+#      - cluster-shared:/home/gameserver/cluster-shared:rw
 #    networks:
 #      asa-network:
 #  set-permissions-2:
-#    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files'"
+#    entrypoint: "/bin/bash -c 'chown -R 25000:25000 /steam ; chown -R 25000:25000 /steamcmd ; chown -R 25000:25000 /server-files ; chown -R 25000:25000 /cluster-shared'"
 #    user: root
 #    image: "opensuse/leap"
 #    volumes:
@@ -60,6 +62,7 @@ services:
 #      - steamcmd-2:/steamcmd:rw
 #      - server-files-2:/server-files:rw
 volumes:
+  cluster-shared:
   steam-1:
   steamcmd-1:
   server-files-1:
