@@ -21,6 +21,8 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Daily restarts](#daily-restarts)
   * [Executing RCON commands](#executing-rcon-commands)
 * [Setting up a second server](#setting-up-a-second-server)
+* [Adding Mods](#adding-mods)
+  * [Adding Mod Maps](#adding-mod-maps)
 * [Common Issues](#common-issues)
   * [Server is not visible in server browser](#server-is-not-visible-in-server-browser)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
@@ -373,6 +375,39 @@ That's it! Your second server is now running.
 
 If you want to spin up more servers, you need to add more entries to the `docker-compose.yml` file. The following sections need to be edited: `services` and `volumes`. Make sure that you adjust all suffixes and replace them with a new one
 (e.g. `-3` now) for the newly added entries.
+
+## Adding Mods
+
+Mods can be added by adjusting the `docker-compose.yml` file and adding a `-mods` option to the start parameters.
+
+e.g.
+
+```
+[...]
+- ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -mods=12345,67891
+[...]
+```
+
+Once done, restart the server using `docker-compose up -d`. It might take longer until the server comes up, because the server has to download the mods first.
+
+Mod IDs are usually somewhere listed on the mod page of a mod on curseforge.com.
+
+### Adding Mod Maps
+
+Search for a map on curseforge.com and find out what mod id the map has and what the map name is. For the map [Svartalfheim](https://www.curseforge.com/ark-survival-ascended/mods/svartalfheim) the map name
+is `Svartalfheim_WP` and the mod id is `893657`.
+
+Once you found out the information you need, you need to adjust your start parameters in the `docker-compose.yml` file and add the map name, as well as the `-mods` option.
+
+e.g.
+
+```
+[...]
+- ASA_START_PARAMS=Svartalfheim_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -mods=893657
+[...]
+```
+
+Restart your server using `docker-compose up -d`. It may take a while, as the server has to download the map, so be patient.
 
 ## Common Issues
 
