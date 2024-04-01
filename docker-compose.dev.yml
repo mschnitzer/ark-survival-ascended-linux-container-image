@@ -43,7 +43,7 @@ services:
 #    hostname: asa-server-2
 #    entrypoint: "/usr/bin/start_server"
 #    user: gameserver
-#    image: "mschnitzer/asa-linux-server:latest"
+#    image: "mschnitzer/asa-linux-server:development"
 #    environment:
 #      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7778?RCONPort=27021?RCONEnabled=True -WinLiveMaxPlayers=50 -clusterid=default -ClusterDirOverride="/home/gameserver/cluster-shared"
 #    ports:
