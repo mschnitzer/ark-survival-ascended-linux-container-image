@@ -25,6 +25,7 @@ services:
       - steamcmd-1:/home/gameserver/steamcmd:rw
       - server-files-1:/home/gameserver/server-files:rw
       - cluster-shared:/home/gameserver/cluster-shared:rw
+      - /etc/localtime:/etc/localtime:ro
       - ./root/usr/share/asa-ctrl:/usr/share/asa-ctrl:rw
     networks:
       asa-network:
@@ -57,6 +58,8 @@ services:
 #      - steamcmd-2:/home/gameserver/steamcmd:rw
 #      - server-files-2:/home/gameserver/server-files:rw
 #      - cluster-shared:/home/gameserver/cluster-shared:rw
+#      - /etc/localtime:/etc/localtime:ro
+#      - ./root/usr/share/asa-ctrl:/usr/share/asa-ctrl:rw
 #    networks:
 #      asa-network:
 #  set-permissions-2:

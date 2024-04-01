@@ -3,6 +3,9 @@ test -f /.kconfig && . /.kconfig
 test -f /.profile && . /.profile
 echo "Configure image: [$kiwi_iname]..."
 
+# Set default timezone
+rm -f /etc/localtime
+
 groupmod -g 25000 gameserver
 usermod -u 25000 gameserver
 

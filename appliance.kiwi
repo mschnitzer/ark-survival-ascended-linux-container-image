@@ -54,6 +54,7 @@
   <packages type="image">
     <package name="patterns-base-base"/>
     <package name="glibc-locale-base"/>
+    <package name="timezone"/>
     <!-- application dependencies: ASA -->
     <package name="libgcc_s1-32bit"/>
     <package name="python3"/>
