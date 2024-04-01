@@ -1,3 +1,7 @@
+###
+### THIS IS THE DEVELOPMENT COMPOSE FILE!
+### You are most likely looking for the 'docker-compose.yml' file instead!
+###
 version: "3.3"
 services:
   asa-server-1:
@@ -21,6 +25,7 @@ services:
       - steamcmd-1:/home/gameserver/steamcmd:rw
       - server-files-1:/home/gameserver/server-files:rw
       - cluster-shared:/home/gameserver/cluster-shared:rw
+      - ./root/usr/share/asa-ctrl:/usr/share/asa-ctrl:rw
     networks:
       asa-network:
   set-permissions-1:
