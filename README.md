@@ -20,7 +20,7 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Applying server updates](#applying-server-updates)
   * [Daily restarts](#daily-restarts)
   * [Executing RCON commands](#executing-rcon-commands)
-* [Setting up a second server](#setting-up-a-second-server)
+* [Setting up a second server / cluster](#setting-up-a-second-server--cluster)
 * [Adding Mods](#adding-mods)
   * [Adding Mod Maps](#adding-mod-maps)
 * [Common Issues](#common-issues)
@@ -356,7 +356,7 @@ docker exec -t asa-server-1 asa-ctrl rcon --exec 'saveworld'
 
 **NOTE:** As opposed to ingame cheat commands, you must not put `admincheat` or `cheat` in front of the command.
 
-## Setting up a second server
+## Setting up a second server / cluster
 
 Setting up a second server is quite easy and you can easily add more if you want (given that your hardware is capable of running multiple instances). There's already a definition for a second server in the `docker-compose.yml` file,
 but the definition is commented out by a leading `#`. If you remove these `#`, and run `docker-compose up -d` again, then the second server should start and it will listen on the game port `7778` and the query port `27021`. Please note that
@@ -371,7 +371,8 @@ asa-server_steam-2/
 asa-server_steamcmd-2/
 ```
 
-That's it! Your second server is now running.
+That's it! Your second server is now running in a cluster setup. This means that travelling between your servers is possible through Obelisks. If you do not want players to travel between your servers, you need to remove the `-clusterid` option
+from the start parameters.
 
 If you want to spin up more servers, you need to add more entries to the `docker-compose.yml` file. The following sections need to be edited: `services` and `volumes`. Make sure that you adjust all suffixes and replace them with a new one
 (e.g. `-3` now) for the newly added entries.
