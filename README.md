@@ -419,7 +419,7 @@ If you cannot discover your server in the server browser, it's most likely due t
 * Your server is still booting up, give it ~5 minutes
 * You are not looking at the "Unofficial" server browser list
 * Your filter settings in the server browser exclude your server
-* You forgot clicking the "Show player server settings". ([view screenshot](https://raw.githubusercontent.com/mschnitzer/ark-survival-ascended-linux-container-image/dev/assets/show-player-servers.jpg)) By default, only Nitrado servers are shown to players when searching for unofficial servers, unfortunately.
+* You forgot clicking the "Show player server settings". ([view screenshot](https://raw.githubusercontent.com/mschnitzer/ark-survival-ascended-linux-container-image/main/assets/show-player-servers.jpg)) By default, only Nitrado servers are shown to players when searching for unofficial servers, unfortunately.
 
 ## Addressing "Connection Timeout" issues
 
