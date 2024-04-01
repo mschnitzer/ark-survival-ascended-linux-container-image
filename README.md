@@ -36,7 +36,7 @@ This repository provides a step by step guide for Linux administrators to host A
 The hardware requirements might change over time, but as of today you can expect:
 
 * ~11 GB RAM usage per server instance
-* ~9.1 GB disk space (the server files alone, without any savegames)
+* ~6.2 GB disk space (the server files alone, without any savegames)
 
 I cannot tell you what CPU to use, as I didn't do any testing on this, but this is the hardware I'm running one ASA server on:
 
