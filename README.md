@@ -21,6 +21,8 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Daily restarts](#daily-restarts)
   * [Executing RCON commands](#executing-rcon-commands)
 * [Setting up a second server](#setting-up-a-second-server)
+* [Common Issues](#common-issues)
+  * [Server is not visible in server browser](#server-is-not-visible-in-server-browser)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
   * [Your server has multiple IPv4 addresses](#your-server-has-multiple-ipv4-addresses)
     * [Debugging with curl](#debugging-with-curl)
@@ -370,6 +372,17 @@ That's it! Your second server is now running.
 
 If you want to spin up more servers, you need to add more entries to the `docker-compose.yml` file. The following sections need to be edited: `services` and `volumes`. Make sure that you adjust all suffixes and replace them with a new one
 (e.g. `-3` now) for the newly added entries.
+
+## Common Issues
+
+### Server is not visible in server browser
+
+If you cannot discover your server in the server browser, it's most likely due to at least one of the following reasons:
+
+* Your server is still booting up, give it ~5 minutes
+* You are not looking at the "Unofficial" server browser list
+* Your filter settings in the server browser exclude your server
+* You forgot clicking the "Show player server settings". ([view screenshot](https://raw.githubusercontent.com/mschnitzer/ark-survival-ascended-linux-container-image/dev/assets/show-player-servers.jpg)) By default, only Nitrado servers are shown to players when searching for unofficial servers, unfortunately.
 
 ## Addressing "Connection Timeout" issues
 
