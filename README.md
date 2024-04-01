@@ -23,6 +23,7 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Setting up a second server / cluster](#setting-up-a-second-server--cluster)
 * [Adding Mods](#adding-mods)
   * [Adding Mod Maps](#adding-mod-maps)
+* [Map Names](#map-names)
 * [Common Issues](#common-issues)
   * [Server is not visible in server browser](#server-is-not-visible-in-server-browser)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
@@ -186,7 +187,7 @@ Start parameters are defined in the `docker-compose.yml`:
 ```
 
 Please note:
-* The value before `?listen` is the name of the map the server launches with.
+* The value before `?listen` is the name of the map the server launches with. ([See all official map names](#map-names))
 * Please do not remove `?listen` from the parameters, otherwise the server is not binding ports
 * `?Port=` is the server port players connect to
 * `?RCONPort=` is the port of the RCON server that allows remote administration of the server
@@ -410,6 +411,17 @@ e.g.
 
 Restart your server using `docker-compose up -d`. It may take a while, as the server has to download the map, so be patient.
 
+## Map Names
+
+This is a list of all official map names with their map id. The map id is used as start parameter in the `docker-compose.yml` file. ([click](#6-changing-the-start-parameters-and-the-player-limit))
+
+| Map Name  | Map ID (for the start parameter) |
+| ------------- | ------------- |
+| The Island    | TheIsland_WP  |
+| Scorched Earth  | ScorchedEarth_WP  |
+
+**NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
+
 ## Common Issues
 
 ### Server is not visible in server browser
@@ -529,3 +541,4 @@ Create a ticket on GitHub, I will do my best to fix it. Feel free to open a pull
 * Glorius Eggroll - For his version of Proton to run the ARK Windows binaries on Linux ([click](https://github.com/GloriousEggroll/proton-ge-custom))
 * cdp1337 - For his Linux guide of installing Proton and running ARK on Linux ([click](https://github.com/cdp1337/ARKSurvivalAscended-Linux))
 * tesfabpel - For his Valve RCON implementation in Ruby ([click](https://github.com/tesfabpel/srcon-rb))
+
