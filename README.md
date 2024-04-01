@@ -158,6 +158,7 @@ The `docker-compose.yml` config defines three docker volumes, which serve as a s
 location of these volumes is `/var/lib/docker/volumes`. If you followed the steps 1:1, then you should find the following directories at that location:
 
 ```
+asa-server_cluster-shared/
 asa-server_server-files-1/
 asa-server_steam-1/
 asa-server_steamcmd-1/
@@ -165,7 +166,7 @@ asa-server_steamcmd-1/
 
 The prefix `asa-server` is defined by the directory name of your `docker-compose.yml` file.
 
-You can ignore `asa-server_steam-1` and `asa-server_steamcmd-1`, these volumes are being used by the container to avoid setting up `Steam` and `steamcmd` on every launch again. Server files including config files are stored at `asa-server_server-files-1`.
+You can ignore `asa-server_steam-1` and `asa-server_steamcmd-1`, these volumes are being used by the container to avoid setting up `Steam` and `steamcmd` on every launch again. Server files including config files are stored at `asa-server_server-files-1`. `asa-server_cluster-shared` provides support for server clusters, so that survivors can travel between your servers with their characters and dinos.
 
 The `GameUserSettings.ini` and `Game.ini` file can be found at `/var/lib/docker/volumes/asa-server_server-files-1/_data/ShooterGame/Saved/Config/WindowsServer`. The `Game.ini` file is not there by default, so you might want to create it yourself.
 
