@@ -7,7 +7,7 @@ services:
     user: gameserver
     image: "mschnitzer/asa-linux-server:latest"
     environment:
-      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -ClusterDirOverride="/home/gameserver/cluster-shared" #PUT clusterid=SECRET here to enable transfers
+      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -clusterid=default -ClusterDirOverride="/home/gameserver/cluster-shared"
       - ENABLE_DEBUG=0
     ports:
       # Game port for player connections through the server browser
@@ -40,7 +40,7 @@ services:
 #    user: gameserver
 #    image: "mschnitzer/asa-linux-server:latest"
 #    environment:
-#      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7778?RCONPort=27021?RCONEnabled=True -WinLiveMaxPlayers=50 -ClusterDirOverride="/home/gameserver/cluster-shared" #PUT clusterid=SECRET here to enable transfers
+#      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7778?RCONPort=27021?RCONEnabled=True -WinLiveMaxPlayers=50 -clusterid=default -ClusterDirOverride="/home/gameserver/cluster-shared"
 #    ports:
 #      # Game port for player connections through the server browser
 #      - 0.0.0.0:7778:7778/udp
