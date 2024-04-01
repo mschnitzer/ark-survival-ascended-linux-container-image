@@ -22,7 +22,6 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Executing RCON commands](#executing-rcon-commands)
 * [Setting up a second server](#setting-up-a-second-server)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
-  * [RUMOR (not 100% confirmed): Server too far away/in a different timezone](#rumor-not-100-confirmed-server-too-far-awayin-a-different-timezone)
   * [Your server has multiple IPv4 addresses](#your-server-has-multiple-ipv4-addresses)
     * [Debugging with curl](#debugging-with-curl)
     * [How to customize your routing?](#how-to-customize-your-routing)
@@ -381,10 +380,6 @@ If that is NOT working and you are having a home setup and not a VPS cloud setup
 Please refer to the documentation of your router how to configure port forwarding properly.
 
 If you can connect to your server through the console command, but not via the sever browser, it is very likely that you are running into one of these issues:
-
-### RUMOR (not 100% confirmed): Server too far away/in a different timezone
-
-There seems to be a bug in the server software that prevents players to connect to a server not close to their timezone. I need further evidence for this, so please open an issue on GitHub and I will build a customized container image for you to test whether that addresses this issue.
 
 ### Your server has multiple IPv4 addresses
 
