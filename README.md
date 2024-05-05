@@ -373,7 +373,8 @@ asa-server_steamcmd-2/
 ```
 
 That's it! Your second server is now running in a cluster setup. This means that travelling between your servers is possible through Obelisks. If you do not want players to travel between your servers, you need to remove the `-clusterid` option
-from the start parameters.
+from the start parameters. It's advised to change the `-clusterid` parameter for all of your servers to a random string and keep it secret (e.g. `-clusterid=aSM42F6PLaPk` as opposed to `-clusterid=default`). The reason for that is that you will
+end up seeing also other servers from the community that use `default` as their `clusterid`. If you only want players to travel between your own servers, then the `clusterid` must be different.
 
 If you want to spin up more servers, you need to add more entries to the `docker-compose.yml` file. The following sections need to be edited: `services` and `volumes`. Make sure that you adjust all suffixes and replace them with a new one
 (e.g. `-3` now) for the newly added entries.
@@ -541,4 +542,3 @@ Create a ticket on GitHub, I will do my best to fix it. Feel free to open a pull
 * Glorius Eggroll - For his version of Proton to run the ARK Windows binaries on Linux ([click](https://github.com/GloriousEggroll/proton-ge-custom))
 * cdp1337 - For his Linux guide of installing Proton and running ARK on Linux ([click](https://github.com/cdp1337/ARKSurvivalAscended-Linux))
 * tesfabpel - For his Valve RCON implementation in Ruby ([click](https://github.com/tesfabpel/srcon-rb))
-
