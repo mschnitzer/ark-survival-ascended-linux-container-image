@@ -23,7 +23,9 @@ This repository provides a step by step guide for Linux administrators to host A
 * [Setting up a second server / cluster](#setting-up-a-second-server--cluster)
 * [Adding Mods](#adding-mods)
   * [Adding Mod Maps](#adding-mod-maps)
+* [Adding Plugins](#adding-plugins)
 * [Map Names](#map-names)
+* [Updating the Container Image](#updating-the-container-image)
 * [Common Issues](#common-issues)
   * [Server is not visible in server browser](#server-is-not-visible-in-server-browser)
 * [Addressing "Connection Timeout" issues](#addressing-connection-timeout-issues)
@@ -412,6 +414,25 @@ e.g.
 
 Restart your server using `docker-compose up -d`. It may take a while, as the server has to download the map, so be patient.
 
+## Adding Plugins
+
+Plugin support was introduced by version 1.4.0 of this container image. So make sure that you updated to the latest version of the container image or to version 1.4.0 as described [here](#updating-the-container-image).
+
+There's a project ([see here](https://gameservershub.com/forums/resources/ark-survival-ascended-serverapi-crossplay-supported.683/)) that allows you to load plugins on your server (e.g. permission handling). To install the plugin loader, please visit [gameservershub.com](https://gameservershub.com/forums/resources/ark-survival-ascended-serverapi-crossplay-supported.683/) and refer to the "ServerAPI Installation Steps" section and download the zip archive. A `gameservershub.com` account is required in order to download the plugin loader.
+
+When the download of the zip archive is completed, follow these steps to install the plugin loader:
+
+1. Make sure that you launched the ASA server at least once without the plugin loader.
+2. Stop the ASA server container by running `docker stop asa-server-1`
+3. Enter the server files binary directory as `root` user: `cd /var/lib/docker/volumes/asa-server_server-files-1/_data/ShooterGame/Binaries/Win64`
+4. Place the downloaded zip archive in that directory (the name of the archive must start with `AsaApi_`). Do not unzip the content.
+5. Restart your server using `docker-compose up -d`
+
+The installation happens automatically by the container start script. You can follow the installation process by running `docker logs -f asa-server-1`. Once the log says "Detected ASA Server API loader. Launching server through AsaApiLoader.exe",
+the installation is complete. In the following log lines your should see the start process of the plugin loader.
+
+How to install plugins is described on gameservershub.com, from which you obtained the plugin loader. Please refer to their guide instead.
+
 ## Map Names
 
 This is a list of all official map names with their map id. The map id is used as start parameter in the `docker-compose.yml` file. ([click](#6-changing-the-start-parameters-and-the-player-limit))
@@ -422,6 +443,22 @@ This is a list of all official map names with their map id. The map id is used a
 | Scorched Earth  | ScorchedEarth_WP  |
 
 **NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
+
+## Updating the Container Image
+
+The container image will be updated from time to time. In general, we try to not break previous installations by an update, but to add certain features, it might be necessary to introduce backward incompatibilities.
+The default `docker-compose.yml` file suggests to use the `latest` branch of the container image. If you want to stay on one specific version, you can force the container image to launch with that said version, by
+changing `image: "mschnitzer/asa-linux-server:latest"` in your `docker-compose.yml` file (as outlined below) to whatever version suits you. A list of all versions can be
+found [here](https://hub.docker.com/r/mschnitzer/asa-linux-server/tags).
+
+For example:
+
+If you want to stay on version `1.4.0` for your ASA server, you must change `image: "mschnitzer/asa-linux-server:latest"` to `image: "mschnitzer/asa-linux-server:1.4.0"`.
+
+Even if you stay on branch `latest`, your container image won't be updated automatically if we roll out an update. You explicitly need to run `docker pull mschnitzer/asa-linux-server:latest` to obtain the newest version.
+
+We strongly suggest to read through the [releases page](https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/releases) of this repository to see what has changed between versions. If there's
+a backward incompatibility being introduced, it will be mentioned there with an explanation what to change.
 
 ## Common Issues
 
