@@ -26,6 +26,12 @@ ASA_BINARY_DIR="/home/gameserver/server-files/ShooterGame/Binaries/Win64"
 START_PARAMS_FILE="/home/gameserver/server-files/start-parameters"
 MODS="$(/usr/bin/cli-asa-mods)"
 ASA_START_PARAMS="$ASA_START_PARAMS $MODS"
+ASA_BINARY_NAME="ArkAscendedServer.exe"
+ASA_PLUGIN_BINARY_NAME="AsaApiLoader.exe"
+ASA_PLUGIN_LOADER_ARCHIVE_NAME=$(basename $ASA_BINARY_DIR/AsaApi_*.zip)
+ASA_PLUGIN_LOADER_ARCHIVE_PATH="$ASA_BINARY_DIR/$ASA_PLUGIN_LOADER_ARCHIVE_NAME"
+ASA_PLUGIN_BINARY_PATH="$ASA_BINARY_DIR/$ASA_PLUGIN_BINARY_NAME"
+LAUNCH_BINARY_NAME="$ASA_BINARY_NAME"
 
 # install proton if necessary
 if [ ! -d "$STEAM_COMPAT_DIR/$PROTON_DIR_NAME" ]; then
@@ -46,5 +52,17 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 export STEAM_COMPAT_CLIENT_INSTALL_PATH=/home/gameserver/Steam
 export STEAM_COMPAT_DATA_PATH=$ASA_COMPAT_DATA
 
-cd "$ASA_BINARY_DIR" 
-$STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run ArkAscendedServer.exe $ASA_START_PARAMS
+cd "$ASA_BINARY_DIR"
+
+# unzip the asa plugin api archive if it exists. delete it afterwards
+if [ -f "$ASA_PLUGIN_LOADER_ARCHIVE_PATH" ]; then
+  unzip -o $ASA_PLUGIN_LOADER_ARCHIVE_NAME
+  rm $ASA_PLUGIN_LOADER_ARCHIVE_NAME
+fi
+
+if [ -f "$ASA_PLUGIN_BINARY_PATH" ]; then
+  echo "Detected ASA Server API loader. Launching server through $ASA_PLUGIN_BINARY_NAME"
+  LAUNCH_BINARY_NAME="$ASA_PLUGIN_BINARY_NAME"
+fi
+
+$STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run $LAUNCH_BINARY_NAME $ASA_START_PARAMS

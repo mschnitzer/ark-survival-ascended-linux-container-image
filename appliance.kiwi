@@ -61,6 +61,8 @@
     <package name="wget"/>
     <package name="tar"/>
     <package name="libfreetype6"/>
+    <!-- application dependencies: ASA server api plugin loader -->
+    <package name="unzip"/>
     <!-- application dependencies: asa-ctrl -->
     <package name="ruby3.3"/>
     <package name="ruby3.3-devel"/>
