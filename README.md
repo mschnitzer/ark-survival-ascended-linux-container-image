@@ -441,6 +441,7 @@ This is a list of all official map names with their map id. The map id is used a
 | ------------- | ------------- |
 | The Island    | TheIsland_WP  |
 | Scorched Earth  | ScorchedEarth_WP  |
+| The Center  | TheCenter_WP  |
 
 **NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
 
