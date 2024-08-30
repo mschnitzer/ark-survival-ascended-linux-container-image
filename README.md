@@ -211,7 +211,9 @@ As of today, ASA does no longer offer a way to query the server, so there's no q
 ## Changing the game port and RCON port
 
 You already learned that ports are defined by `ASA_START_PARAMS` in the `docker-compose.yml` file. This just tells the ASA server what ports to bind.
-As a first step for port changes adjust the start parameters accordingly. E. g. if you want to change the game port from `7777` to `7755` your new start parameters would be like this:
+As a first step for port changes adjust the start parameters accordingly.
+
+E. g. if you want to change the game port from `7777` to `7755` your new start parameters would be like this:
 
 ```yml
 ...
