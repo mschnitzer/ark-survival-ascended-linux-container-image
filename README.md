@@ -237,6 +237,19 @@ Adjust the port to your liking, but make sure that you change both numbers (the 
 ...
 ```
 
+As the start parameters are dependent on the port settings you also have to adjust the following line in the `docker-compose.yml` according to your port changes. Assuming the above game port change to `7755` this would look like:
+
+```yml
+...
+    environment:
+      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7755?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -clusterid=default -ClusterDirOverride="/home/gameserver/cluster-shared"
+      - ENABLE_DEBUG=0
+...
+```
+
+Now that your port changes are set you have to recreate your container. Therefore you need to use `docker-compose up -d` in order to apply your port changes.
+
+
 ## Start/Restart/Stop
 
 To perform any of the actions, execute the following commands (you need to be in the directory of the `docker-compose.yml` file):
