@@ -213,7 +213,7 @@ As of today, ASA does no longer offer a way to query the server, so there's no q
 You already learned that ports are defined by `ASA_START_PARAMS` in the `docker-compose.yml` file. This just tells the ASA server what ports to bind.
 As a first step for port changes adjust the start parameters accordingly.
 
-E. g. if you want to change the game port from `7777` to `7755` your new start parameters would be like this:
+E. g. if you want to change the game port from `7777` to `7755` your new start parameters would look like this:
 
 ```yml
 ...
@@ -237,7 +237,7 @@ Open the `docker-compose.yml` file again and edit the lines where the container 
 ...
 ```
 
-Adjust the port to your liking, but make sure that you change both numbers (the one before and after the `:`). Assuming the above game port change to `7755` this would be the result:
+Adjust the port to your liking, but make sure that you change both numbers (the one before and after the `:`). Assuming the above game port changes to `7755` this would be the result:
 
 ```yml
 ...
@@ -249,7 +249,7 @@ Adjust the port to your liking, but make sure that you change both numbers (the 
 ...
 ```
 
-Now that your port changes are set you have to recreate your container. Therefore you need to use `docker-compose up -d` in order to apply your port changes.
+Now that your port changes are set, you have to recreate your container. Therefore you need to use `docker-compose up -d` in order to apply your port changes.
 
 
 ## Start/Restart/Stop
