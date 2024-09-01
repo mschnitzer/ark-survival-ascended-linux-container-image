@@ -210,8 +210,20 @@ As of today, ASA does no longer offer a way to query the server, so there's no q
 
 ## Changing the game port and RCON port
 
-You already learned that ports are defined by `ASA_START_PARAMS` in the `docker-compose.yml` file. This just tells the ASA server what ports to bind, but this alone is not enough and you need to apply
-the following changes as well.
+You already learned that ports are defined by `ASA_START_PARAMS` in the `docker-compose.yml` file. This just tells the ASA server what ports to bind.
+As a first step for port changes adjust the start parameters accordingly.
+
+E. g. if you want to change the game port from `7777` to `7755` your new start parameters would look like this:
+
+```yml
+...
+    environment:
+      - ASA_START_PARAMS=TheIsland_WP?listen?Port=7755?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50 -clusterid=default -ClusterDirOverride="/home/gameserver/cluster-shared"
+      - ENABLE_DEBUG=0
+...
+```
+
+But this alone is not enough and you need to apply the following changes as well.
 
 Open the `docker-compose.yml` file again and edit the lines where the container ports are defined:
 
@@ -225,7 +237,7 @@ Open the `docker-compose.yml` file again and edit the lines where the container 
 ...
 ```
 
-Adjust the port to your liking, but make sure that you change both numbers (the one before and after the `:`). e.g. if you want to change the game port to `7755`, then this would be the result:
+Adjust the port to your liking, but make sure that you change both numbers (the one before and after the `:`). Assuming the above game port changes to `7755` this would be the result:
 
 ```yml
 ...
@@ -236,6 +248,9 @@ Adjust the port to your liking, but make sure that you change both numbers (the 
       - 0.0.0.0:27020:27020/tcp
 ...
 ```
+
+Now that your port changes are set, you have to recreate your container. Therefore you need to use `docker-compose up -d` in order to apply your port changes.
+
 
 ## Start/Restart/Stop
 
