@@ -57,7 +57,7 @@ Required Linux experience: **Beginner**
 
 In theory, you can use these steps on any Linux system where Docker is installed. It has been tested with:
 
-* openSUSE Leap 15.5
+* openSUSE Leap 15.6
 * Debian 12 (bookworm)
 * Ubuntu 22.04.3 LTS (Jammy Jellyfish)
 * Ubuntu 23.10 (Mantic Minotaur)
