@@ -40,8 +40,8 @@ This repository provides a step by step guide for Linux administrators to host A
 
 The hardware requirements might change over time, but as of today you can expect:
 
-* ~11 GB RAM usage per server instance
-* ~12 GB disk space (the server files alone, without any savegames)
+* ~12 GB RAM usage per server instance
+* ~19 GB disk space (the server files alone, without any savegames)
 
 I cannot tell you what CPU to use, as I didn't do any testing on this, but this is the hardware I'm running one ASA server on:
 
@@ -457,6 +457,7 @@ This is a list of all official map names with their map id. The map id is used a
 | The Island    | TheIsland_WP  |
 | Scorched Earth  | ScorchedEarth_WP  |
 | The Center  | TheCenter_WP  |
+| Aberration | Aberration_WP |
 
 **NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
 
