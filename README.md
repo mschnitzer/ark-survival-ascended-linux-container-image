@@ -66,7 +66,7 @@ You need to be root user (`su root`) to perform these steps, but don't worry, th
 
 ### 1. Install Docker & Docker Compose
 
-#### openSUSE Leap 15.5:
+#### openSUSE Leap 15.6:
 
 ```
 zypper in -y docker docker-compose
