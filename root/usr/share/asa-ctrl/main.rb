@@ -1,4 +1,4 @@
-#!/usr/bin/ruby.ruby3.3
+#!/usr/bin/ruby.ruby3.4
 require 'json'
 require 'slop'
 require 'iniparse'

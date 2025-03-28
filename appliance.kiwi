@@ -11,7 +11,7 @@
     <profile name="development" description="building docker tag: development"/>
   </profiles>
   <preferences>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <packagemanager>zypper</packagemanager>
     <rpm-excludedocs>true</rpm-excludedocs>
     <rpm-check-signatures>false</rpm-check-signatures>
@@ -64,8 +64,8 @@
     <!-- application dependencies: ASA server api plugin loader -->
     <package name="unzip"/>
     <!-- application dependencies: asa-ctrl -->
-    <package name="ruby3.3"/>
-    <package name="ruby3.3-devel"/>
+    <package name="ruby3.4"/>
+    <package name="ruby3.4-devel"/>
     <package name="make"/>
     <package name="gcc-c++"/>
   </packages>
@@ -99,7 +99,7 @@
     <package name="glibc-locale"/>
   </packages>
   <packages type="delete" profiles="stable beta">
-    <package name="ruby3.3-devel"/>
+    <package name="ruby3.4-devel"/>
     <package name="make"/>
     <package name="gcc-c++"/>
   </packages>

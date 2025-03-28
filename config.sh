@@ -14,12 +14,12 @@ chmod 0755 /usr/bin/cli-asa-mods
 
 # install ruby gems
 cd /usr/share/asa-ctrl
-bundle.ruby3.3
+bundle.ruby3.4
 
 if [ "$kiwi_profiles" = "development" ]; then
   # will be mounted to ease development
   rm -r /usr/share/asa-ctrl
-  gem.ruby3.3 install byebug
+  gem.ruby3.4 install byebug
 else
   chmod 0755 /usr/share/asa-ctrl/main.rb
 fi
