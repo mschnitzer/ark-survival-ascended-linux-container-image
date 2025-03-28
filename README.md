@@ -40,8 +40,8 @@ This repository provides a step by step guide for Linux administrators to host A
 
 The hardware requirements might change over time, but as of today you can expect:
 
-* ~12 GB RAM usage per server instance
-* ~30 GB disk space (the server files alone, without any savegames)
+* ~13 GB RAM usage per server instance
+* ~31 GB disk space (the server files alone, without any savegames)
 
 I cannot tell you what CPU to use, as I didn't do any testing on this, but this is the hardware I'm running one ASA server on:
 
@@ -59,8 +59,8 @@ In theory, you can use these steps on any Linux system where Docker is installed
 
 * openSUSE Leap 15.6
 * Debian 12 (bookworm)
-* Ubuntu 22.04.3 LTS (Jammy Jellyfish)
-* Ubuntu 23.10 (Mantic Minotaur)
+* **NOT WORKING:** Ubuntu 22.04.x LTS (Jammy Jellyfish) [As of March 28th 2025, a recent distro update causes the container to have a constant high CPU usage, well beyond 400% and the server won't launch. Use Ubuntu 24.04.x if you can]
+* Ubuntu 24.04.1 (Noble Numbat)
 
 You need to be root user (`su root`) to perform these steps, but don't worry, the ASA server itself will run rootless.
 
@@ -74,26 +74,13 @@ zypper in -y docker docker-compose
 
 #### Debian 12
 
-```
-apt-get install -y docker docker-compose
-```
+It is recommended to install the docker engine from Docker's official repository. Follow the instructions in [this guide](https://docs.docker.com/engine/install/debian/#install-using-the-repository)
+and refer to the "Install using the apt repository" section.
 
-#### Ubuntu (22.04.x):
+#### Ubuntu (24.04.x):
 
-```
-apt-get install -y docker docker-compose
-```
-
-#### Ubuntu (23.x):
-
-The default repositories of Ubuntu 23.x do no longer serve the docker engine. Thus you need to add the official docker repository manually to proceed. Please refer to
+The docker engine is not part of the official Ubuntu 24.x repositories, thus you need to install it from the Docker's repository instead. Please refer to
 [this guide](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) and follow the steps outlined in the "Install using the apt repository" section.
-
-Additionally to the steps of the official docker guide, you need to install `docker-compose` as well:
-
-```
-apt-get install -y docker-compose
-```
 
 ### 2. Start docker daemon
 
@@ -119,7 +106,7 @@ Now start the server for the first time. It will install Steam, Proton, and down
 Go to the directory of your `docker-compose.yml` file and execute the following command:
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 It will download my docker image and then spins up a container called `asa-server-1` (defined in `docker-compose.yml`). You can follow the installation and the start of your server by running:
@@ -249,7 +236,7 @@ Adjust the port to your liking, but make sure that you change both numbers (the 
 ...
 ```
 
-Now that your port changes are set, you have to recreate your container. Therefore you need to use `docker-compose up -d` in order to apply your port changes.
+Now that your port changes are set, you have to recreate your container. Therefore you need to use `docker compose up -d` in order to apply your port changes.
 
 
 ## Start/Restart/Stop
@@ -257,13 +244,13 @@ Now that your port changes are set, you have to recreate your container. Therefo
 To perform any of the actions, execute the following commands (you need to be in the directory of the `docker-compose.yml` file):
 
 ```
-docker-compose start asa-server-1
-docker-compose restart asa-server-1
-docker-compose stop asa-server-1
+docker compose start asa-server-1
+docker compose restart asa-server-1
+docker compose stop asa-server-1
 ```
 
 You can also use the native docker commands, where you do not need to be in the directory of the `docker-compose.yml` file. However using this method would not check for changes in your `docker-compose.yml` file.
-So in case you edited the `docker-compose.yml` file (e.g. because you adjusted the start parameters), you need to use `docker-compose` commands instead.
+So in case you edited the `docker-compose.yml` file (e.g. because you adjusted the start parameters), you need to use `docker compose` commands instead.
 ```
 docker start/restart/stop asa-server-1
 ```
@@ -291,7 +278,7 @@ services:
 ...
 ```
 
-Now run `docker-compose up -d` and the container will just start without launching the server or validating server files.
+Now run `docker compose up -d` and the container will just start without launching the server or validating server files.
 
 Check if the container launched in debug mode by running `docker logs -f asa-server-1` and check whether it's saying "Entering debug mode...". If that's the case, you are good.
 
@@ -358,13 +345,15 @@ ensure you can execute RCON commands.
 You can run RCON commands by accessing the `rcon` subcommand of the `asa-ctrl` tool which is shipped with the container image. There's no need to enter your server password, IP, or RCON port manually. As long as
 you have set your RCON password and port, either as a start parameter or in the `GameUserSettings.ini` file of your server, `asa-ctrl` is able to figure those details out by itself.
 
-The following variables need to be present either as start parameter or in `GameUserSettings.ini` under the `[ServerSettings]` section:
+The following variables need to be present in `GameUserSettings.ini` under the `[ServerSettings]` section:
 
 ```
 RCONEnabled=True
 ServerAdminPassword=mysecretpass
 RCONPort=27020
 ```
+
+**NOTE:** There can be issues setting `ServerAdminPassword` as command line option. I'd suggest to set it in the `GameUserSettings.ini` file only.
 
 Example:
 
@@ -377,7 +366,7 @@ docker exec -t asa-server-1 asa-ctrl rcon --exec 'saveworld'
 ## Setting up a second server / cluster
 
 Setting up a second server is quite easy and you can easily add more if you want (given that your hardware is capable of running multiple instances). There's already a definition for a second server in the `docker-compose.yml` file,
-but the definition is commented out by a leading `#`. If you remove these `#`, and run `docker-compose up -d` again, then the second server should start and it will listen on the game port `7778` and the query port `27021`. Please note that
+but the definition is commented out by a leading `#`. If you remove these `#`, and run `docker compose up -d` again, then the second server should start and it will listen on the game port `7778` and the query port `27021`. Please note that
 the server files, as well as Steam, and steamcmd will be downloaded again and the first start can take a while.
 
 You can edit the start parameters in the same way like for the first server and the files of the second server are located at the same location, except that the second server has its suffix changed from `-1` to `-2`. The directories will therefore,
@@ -408,7 +397,7 @@ e.g.
 [...]
 ```
 
-Once done, restart the server using `docker-compose up -d`. It might take longer until the server comes up, because the server has to download the mods first.
+Once done, restart the server using `docker compose up -d`. It might take longer until the server comes up, because the server has to download the mods first.
 
 Mod IDs are usually somewhere listed on the mod page of a mod on curseforge.com.
 
@@ -427,7 +416,7 @@ e.g.
 [...]
 ```
 
-Restart your server using `docker-compose up -d`. It may take a while, as the server has to download the map, so be patient.
+Restart your server using `docker compose up -d`. It may take a while, as the server has to download the map, so be patient.
 
 ## Adding Plugins
 
@@ -441,7 +430,7 @@ When the download of the zip archive is completed, follow these steps to install
 2. Stop the ASA server container by running `docker stop asa-server-1`
 3. Enter the server files binary directory as `root` user: `cd /var/lib/docker/volumes/asa-server_server-files-1/_data/ShooterGame/Binaries/Win64`
 4. Place the downloaded zip archive in that directory (the name of the archive must start with `AsaApi_`). Do not unzip the content.
-5. Restart your server using `docker-compose up -d`
+5. Restart your server using `docker compose up -d`
 
 The installation happens automatically by the container start script. You can follow the installation process by running `docker logs -f asa-server-1`. Once the log says "Detected ASA Server API loader. Launching server through AsaApiLoader.exe",
 the installation is complete. In the following log lines your should see the start process of the plugin loader.
@@ -553,7 +542,7 @@ docker rm asa-server-1
 docker network rm asa-server_asa-network
 ```
 
-Now run `docker-compose up -d` from within the directory where your `docker-compose.yml` is located at.
+Now run `docker compose up -d` from within the directory where your `docker-compose.yml` is located at.
 
 Once done and the container is up again, inspect the network to find its subnet:
 
