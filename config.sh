@@ -26,4 +26,7 @@ fi
 
 ln -s /usr/share/asa-ctrl/main.rb /usr/bin/asa-ctrl
 
+# using python3.12 behind python3 executable instead of python3.6
+ln -s /usr/bin/python3.12 /usr/bin/python3
+
 exit 0

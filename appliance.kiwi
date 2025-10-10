@@ -57,7 +57,7 @@
     <package name="timezone"/>
     <!-- application dependencies: ASA -->
     <package name="libgcc_s1-32bit"/>
-    <package name="python3"/>
+    <package name="python312"/>
     <package name="wget"/>
     <package name="tar"/>
     <package name="libfreetype6"/>
