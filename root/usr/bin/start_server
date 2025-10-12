@@ -16,7 +16,7 @@ fi
 cd /home/gameserver/steamcmd
 ./steamcmd.sh +force_install_dir /home/gameserver/server-files +login anonymous +app_update 2430930 validate +quit
 
-PROTON_VERSION="8-21"
+PROTON_VERSION="10-17"
 PROTON_DIR_NAME="GE-Proton$PROTON_VERSION"
 PROTON_ARCHIVE_NAME="$PROTON_DIR_NAME.tar.gz"
 STEAM_COMPAT_DATA=/home/gameserver/server-files/steamapps/compatdata
