@@ -448,6 +448,7 @@ This is a list of all official map names with their map id. The map id is used a
 | The Center  | TheCenter_WP  |
 | Aberration | Aberration_WP |
 | Extinction | Extinction_WP |
+| Valguero | Valguero_WP |
 
 **NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
 
