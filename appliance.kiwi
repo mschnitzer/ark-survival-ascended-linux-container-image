@@ -11,7 +11,7 @@
     <profile name="development" description="building docker tag: development"/>
   </profiles>
   <preferences>
-    <version>1.4.1</version>
+    <version>1.5.0</version>
     <packagemanager>zypper</packagemanager>
     <rpm-excludedocs>true</rpm-excludedocs>
     <rpm-check-signatures>false</rpm-check-signatures>
@@ -36,20 +36,8 @@
   <users>
     <user name="gameserver" password="" home="/home/gameserver" groups="gameserver" id="25000"/>
   </users>
-  <repository type="rpm-md" alias="repo-backports-update" imageinclude="true">
-    <source path="http://download.opensuse.org/update/leap/15.6/backports/"/>
-  </repository>
   <repository type="rpm-md" alias="repo-oss" imageinclude="true">
-    <source path="http://download.opensuse.org/distribution/leap/15.6/repo/oss/"/>
-  </repository>
-  <repository type="rpm-md" alias="repo-sle-update" imageinclude="true">
-    <source path="http://download.opensuse.org/update/leap/15.6/sle/"/>
-  </repository>
-  <repository type="rpm-md" alias="repo-update" imageinclude="true">
-    <source path="http://download.opensuse.org/update/leap/15.6/oss"/>
-  </repository>
-  <repository type="rpm-md" alias="ruby-repo" imageinclude="true">
-    <source path="https://download.opensuse.org/repositories/devel:/languages:/ruby/15.6"/>
+    <source path="http://cdn.opensuse.org/distribution/leap/16.0/repo/oss/x86_64"/>
   </repository>
   <packages type="image">
     <package name="patterns-base-base"/>
@@ -57,7 +45,7 @@
     <package name="timezone"/>
     <!-- application dependencies: ASA -->
     <package name="libgcc_s1-32bit"/>
-    <package name="python3"/>
+    <package name="python313"/>
     <package name="wget"/>
     <package name="tar"/>
     <package name="libfreetype6"/>
@@ -81,7 +69,8 @@
     <package name="cracklib-dict-full"/>
     <package name="ca-certificates"/>
     <package name="ca-certificates-mozilla"/>
-    <package name="openSUSE-release"/>
+    <!-- somehow not available on Leap 16.0 -->
+    <!--package name="openSUSE-release"/-->
   </packages>
   <packages type="delete">
     <package name="kernel-default"/>
