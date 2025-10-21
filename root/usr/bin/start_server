@@ -25,6 +25,11 @@ ASA_COMPAT_DATA=$STEAM_COMPAT_DATA/2430930
 ASA_BINARY_DIR="/home/gameserver/server-files/ShooterGame/Binaries/Win64"
 START_PARAMS_FILE="/home/gameserver/server-files/start-parameters"
 MODS="$(/usr/bin/cli-asa-mods)"
+
+# Interpolate environment variables in ASA_START_PARAMS
+# This allows using ${ENV_VAR} syntax in start parameters for secrets
+ASA_START_PARAMS=$(eval echo "\"$ASA_START_PARAMS\"")
+
 ASA_START_PARAMS="$ASA_START_PARAMS $MODS"
 ASA_BINARY_NAME="ArkAscendedServer.exe"
 ASA_PLUGIN_BINARY_NAME="AsaApiLoader.exe"
