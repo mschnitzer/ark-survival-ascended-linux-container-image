@@ -62,6 +62,7 @@ jobs:
           context: .
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
+          load: ${{ github.event_name == 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -72,6 +73,7 @@ jobs:
             VCS_REF=${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner
+        if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
@@ -81,11 +83,12 @@ jobs:
 
       - name: Upload Trivy results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         with:
           sarif_file: 'trivy-results.sarif'
 
       - name: Run Trivy vulnerability scanner (table output)
+        if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
