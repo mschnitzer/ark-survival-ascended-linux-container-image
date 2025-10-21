@@ -3,13 +3,24 @@ version: '3'
 vars:
   IMAGE_NAME: ghcr.io/jdogwilly/asa-linux-server
   VERSION:
-    sh: git describe --tags --always --dirty 2>/dev/null || echo "dev"
+    sh: cat VERSION 2>/dev/null || echo "dev"
+  BUILD_DATE:
+    sh: date -u +%Y-%m-%dT%H:%M:%SZ
+  VCS_REF:
+    sh: git rev-parse HEAD 2>/dev/null || echo "unknown"
 
 tasks:
   build:
     desc: Build the Docker image
     cmds:
-      - docker build -t {{.IMAGE_NAME}}:latest -t {{.IMAGE_NAME}}:{{.VERSION}} .
+      - |
+        docker build \
+          --build-arg VERSION={{.VERSION}} \
+          --build-arg BUILD_DATE={{.BUILD_DATE}} \
+          --build-arg VCS_REF={{.VCS_REF}} \
+          -t {{.IMAGE_NAME}}:latest \
+          -t {{.IMAGE_NAME}}:{{.VERSION}} \
+          .
 
   run:
     desc: Run a test container

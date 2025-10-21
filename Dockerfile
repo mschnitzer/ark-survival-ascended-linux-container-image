@@ -1,10 +1,22 @@
 FROM ubuntu:24.04
 
+# Build arguments for dynamic metadata
+ARG VERSION=dev
+ARG BUILD_DATE=unknown
+ARG VCS_REF=unknown
+
+# OCI standard labels
 LABEL org.opencontainers.image.title="ARK: Survival Ascended - Dedicated Linux Server"
 LABEL org.opencontainers.image.description="Docker container for running ARK: Survival Ascended dedicated servers on Linux using Proton"
 LABEL org.opencontainers.image.authors="github@mschnitzer.de"
+LABEL org.opencontainers.image.url="https://github.com/jdogwilly/ark-survival-ascended-linux-container-image"
 LABEL org.opencontainers.image.source="https://github.com/jdogwilly/ark-survival-ascended-linux-container-image"
-LABEL org.opencontainers.image.version="1.5.0"
+LABEL org.opencontainers.image.documentation="https://github.com/jdogwilly/ark-survival-ascended-linux-container-image/blob/main/README.md"
+LABEL org.opencontainers.image.version="${VERSION}"
+LABEL org.opencontainers.image.created="${BUILD_DATE}"
+LABEL org.opencontainers.image.revision="${VCS_REF}"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.vendor="Community"
 
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive

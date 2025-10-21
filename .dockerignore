@@ -1,0 +1,35 @@
+# Git files
+.git/
+.gitattributes
+.github/
+
+# Documentation
+*.md
+README.md
+CLAUDE.md
+TO-DO.md
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Build artifacts
+Taskfile.yml
+docker-compose.yml
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Package manager files
+package-lock.json
+package.json
+
+# Assets and media (if not needed in container)
+assets/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
