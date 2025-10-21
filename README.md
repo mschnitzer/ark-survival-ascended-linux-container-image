@@ -91,12 +91,12 @@ systemctl enable docker
 
 ### 3. Create the Docker Compose config
 
-Create a directory called `asa-server` wherever you like and download [my docker-compose.yml](https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/blob/main/docker-compose.yml) example.
+Create a directory called `asa-server` wherever you like and download [the docker-compose.yml](https://github.com/jdogwilly/ark-survival-ascended-linux-container-image/blob/main/docker-compose.yml) example.
 
 ```
 mkdir asa-server
 cd asa-server
-wget https://raw.githubusercontent.com/mschnitzer/ark-survival-ascended-linux-container-image/main/docker-compose.yml
+wget https://raw.githubusercontent.com/jdogwilly/ark-survival-ascended-linux-container-image/main/docker-compose.yml
 ```
 
 ### 4. First server start
@@ -109,10 +109,10 @@ Go to the directory of your `docker-compose.yml` file and execute the following 
 docker compose up -d
 ```
 
-It will download my docker image and then spins up a container called `asa-server-1` (defined in `docker-compose.yml`). You can follow the installation and the start of your server by running:
+It will download the docker image and then spins up a container called `asa-server` (defined in `docker-compose.yml`). You can follow the installation and the start of your server by running:
 
 ```
-docker logs -f asa-server-1
+docker logs -f asa-server
 ```
 
 (Note: You can safely run `CTRL + C` to exit the log window again without causing the server to stop)
@@ -127,7 +127,7 @@ Starting the ARK: Survival Ascended dedicated server...
 
 The server name is randomly generated upon the first start. Please execute the following command to see under which name the server is discoverable in the server browser:
 ```
-docker exec asa-server-1 cat server-files/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini | grep SessionName
+docker exec asa-server cat server-files/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini | grep SessionName
 ```
 
 If the command fails in execution and reports an `No such file or directory` error, just wait some more minutes and it should eventually work. Once the command executed successfully, it should output something like this:
@@ -136,31 +136,31 @@ SessionName=ARK #334850
 ```
 
 Now try to find the server by its name. Just search in the "Unofficial" section in ASA for the number of the server. In my case it is `334850`. If you are not able to connect to it right away, wait up to 5 more minutes and
-try it again. If it's still not possible, [open an issue on GitHub](https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/issues/new) to get help.
+try it again. If it's still not possible, [open an issue on GitHub](https://github.com/jdogwilly/ark-survival-ascended-linux-container-image/issues/new) to get help.
 
 Once confirmed that you are able to connect, stop the server again:
 
 ```
-docker stop asa-server-1
+docker stop asa-server
 ```
 
 ### 5. Server configuration
 
-The `docker-compose.yml` config defines three docker volumes, which serve as a storage for your server files, Steam, and Proton. They are directly mounted to the docker container and can be edited outside of the container. The
+The `docker-compose.yml` config defines four docker volumes, which serve as a storage for your server files, Steam, and Proton. They are directly mounted to the docker container and can be edited outside of the container. The
 location of these volumes is `/var/lib/docker/volumes`. If you followed the steps 1:1, then you should find the following directories at that location:
 
 ```
 asa-server_cluster-shared/
-asa-server_server-files-1/
-asa-server_steam-1/
-asa-server_steamcmd-1/
+asa-server_server-files/
+asa-server_steam/
+asa-server_steamcmd/
 ```
 
 The prefix `asa-server` is defined by the directory name of your `docker-compose.yml` file.
 
-You can ignore `asa-server_steam-1` and `asa-server_steamcmd-1`, these volumes are being used by the container to avoid setting up `Steam` and `steamcmd` on every launch again. Server files including config files are stored at `asa-server_server-files-1`. `asa-server_cluster-shared` provides support for server clusters, so that survivors can travel between your servers with their characters and dinos.
+You can ignore `asa-server_steam` and `asa-server_steamcmd`, these volumes are being used by the container to avoid setting up `Steam` and `steamcmd` on every launch again. Server files including config files are stored at `asa-server_server-files`. `asa-server_cluster-shared` provides support for server clusters, so that survivors can travel between your servers with their characters and dinos.
 
-The `GameUserSettings.ini` and `Game.ini` file can be found at `/var/lib/docker/volumes/asa-server_server-files-1/_data/ShooterGame/Saved/Config/WindowsServer`. The `Game.ini` file is not there by default, so you might want to create it yourself.
+The `GameUserSettings.ini` and `Game.ini` file can be found at `/var/lib/docker/volumes/asa-server_server-files/_data/ShooterGame/Saved/Config/WindowsServer`. The `Game.ini` file is not there by default, so you might want to create it yourself.
 
 You don't need to worry about file permissions. The `docker-compose.yml` is running a container before starting the ASA server and adjusts the file permissions to `25000:25000`, which is the user id and group id the server starts with. These ids are not bound to any user on your system and that's fine and not an issue.
 
@@ -244,15 +244,15 @@ Now that your port changes are set, you have to recreate your container. Therefo
 To perform any of the actions, execute the following commands (you need to be in the directory of the `docker-compose.yml` file):
 
 ```
-docker compose start asa-server-1
-docker compose restart asa-server-1
-docker compose stop asa-server-1
+docker compose start asa-server
+docker compose restart asa-server
+docker compose stop asa-server
 ```
 
 You can also use the native docker commands, where you do not need to be in the directory of the `docker-compose.yml` file. However using this method would not check for changes in your `docker-compose.yml` file.
 So in case you edited the `docker-compose.yml` file (e.g. because you adjusted the start parameters), you need to use `docker compose` commands instead.
 ```
-docker start/restart/stop asa-server-1
+docker start/restart/stop asa-server
 ```
 
 ## Server Administration
@@ -266,12 +266,10 @@ Once done, the result will look like this:
 ...
 version: "3.3"
 services:
-  asa-server-1:
-    container_name: asa-server-1
-    hostname: asa-server-1
-    entrypoint: "/usr/bin/start_server"
-    user: gameserver
-    image: "mschnitzer/asa-linux-server:latest"
+  asa-server:
+    container_name: asa-server
+    hostname: asa-server
+    image: "ghcr.io/jdogwilly/asa-linux-server:latest"
     environment:
       - ASA_START_PARAMS=TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50
       - ENABLE_DEBUG=1
@@ -280,18 +278,18 @@ services:
 
 Now run `docker compose up -d` and the container will just start without launching the server or validating server files.
 
-Check if the container launched in debug mode by running `docker logs -f asa-server-1` and check whether it's saying "Entering debug mode...". If that's the case, you are good.
+Check if the container launched in debug mode by running `docker logs -f asa-server` and check whether it's saying "Entering debug mode...". If that's the case, you are good.
 
 You can enter the shell of your server by running
 
 ```
-docker exec -ti asa-server-1 bash
+docker exec -ti asa-server bash
 ```
 
 If you need root access run
 
 ```
-docker exec -ti -u root asa-server-1 bash
+docker exec -ti -u root asa-server bash
 ```
 
 ### Applying server updates
@@ -299,7 +297,7 @@ docker exec -ti -u root asa-server-1 bash
 Updates will be automatically downloaded or applied once you restart the container with ...
 
 ```
-docker restart asa-server-1
+docker restart asa-server
 ```
 
 It is totally possible that after a restart and applying all updates, the client is still one or more versions ahead. This is because Wildcard does sometimes run client-only updates, since not all
@@ -321,11 +319,11 @@ crontab -e
 
 Add the following lines to it:
 ```
-30 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'serverchat Server restart in 30 minutes'
-50 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'serverchat Server restart in 10 minutes'
-57 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'serverchat Server restart in 3 minutes'
-58 3 * * * docker exec asa-server-1 asa-ctrl rcon --exec 'saveworld'
-0 4 * * * docker restart asa-server-1
+30 3 * * * docker exec asa-server asa-ctrl rcon --exec 'serverchat Server restart in 30 minutes'
+50 3 * * * docker exec asa-server asa-ctrl rcon --exec 'serverchat Server restart in 10 minutes'
+57 3 * * * docker exec asa-server asa-ctrl rcon --exec 'serverchat Server restart in 3 minutes'
+58 3 * * * docker exec asa-server asa-ctrl rcon --exec 'saveworld'
+0 4 * * * docker restart asa-server
 ```
 
 Explanation:
@@ -358,32 +356,52 @@ RCONPort=27020
 Example:
 
 ```
-docker exec -t asa-server-1 asa-ctrl rcon --exec 'saveworld'
+docker exec -t asa-server asa-ctrl rcon --exec 'saveworld'
 ```
 
 **NOTE:** As opposed to ingame cheat commands, you must not put `admincheat` or `cheat` in front of the command.
 
 ## Setting up a second server / cluster
 
-Setting up a second server is quite easy and you can easily add more if you want (given that your hardware is capable of running multiple instances). There's already a definition for a second server in the `docker-compose.yml` file,
-but the definition is commented out by a leading `#`. If you remove these `#`, and run `docker compose up -d` again, then the second server should start and it will listen on the game port `7778` and the query port `27021`. Please note that
-the server files, as well as Steam, and steamcmd will be downloaded again and the first start can take a while.
+Setting up a second server is quite easy and you can easily add more if you want (given that your hardware is capable of running multiple instances). You can duplicate the server service definition in the `docker-compose.yml` file with a different name and ports.
 
-You can edit the start parameters in the same way like for the first server and the files of the second server are located at the same location, except that the second server has its suffix changed from `-1` to `-2`. The directories will therefore,
-named like this:
+For example, add a second server that listens on port `7778`:
 
+```yml
+  asa-server-2:
+    container_name: asa-server-2
+    hostname: asa-server-2
+    image: "ghcr.io/jdogwilly/asa-linux-server:latest"
+    tty: true
+    environment:
+      - ASA_START_PARAMS=ScorchedEarth_WP?listen?Port=7778?RCONPort=27021?RCONEnabled=True -WinLiveMaxPlayers=50 -clusterid=default -ClusterDirOverride="/home/gameserver/cluster-shared"
+      - ENABLE_DEBUG=0
+    ports:
+      - 0.0.0.0:7778:7778/udp
+      - 0.0.0.0:27021:27021/tcp
+    depends_on:
+      - set-permissions
+    volumes:
+      - steam-2:/home/gameserver/Steam:rw
+      - steamcmd-2:/home/gameserver/steamcmd:rw
+      - server-files-2:/home/gameserver/server-files:rw
+      - cluster-shared:/home/gameserver/cluster-shared:rw
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      asa-network:
 ```
-asa-server_server-files-2/
-asa-server_steam-2/
-asa-server_steamcmd-2/
+
+And add the corresponding volumes:
+```yml
+volumes:
+  steam-2:
+  steamcmd-2:
+  server-files-2:
 ```
 
 That's it! Your second server is now running in a cluster setup. This means that travelling between your servers is possible through Obelisks. If you do not want players to travel between your servers, you need to remove the `-clusterid` option
 from the start parameters. It's advised to change the `-clusterid` parameter for all of your servers to a random string and keep it secret (e.g. `-clusterid=aSM42F6PLaPk` as opposed to `-clusterid=default`). The reason for that is that you will
 end up seeing also other servers from the community that use `default` as their `clusterid`. If you only want players to travel between your own servers, then the `clusterid` must be different.
-
-If you want to spin up more servers, you need to add more entries to the `docker-compose.yml` file. The following sections need to be edited: `services` and `volumes`. Make sure that you adjust all suffixes and replace them with a new one
-(e.g. `-3` now) for the newly added entries.
 
 ## Adding Mods
 
@@ -427,12 +445,12 @@ There's a project ([see here](https://gameservershub.com/forums/resources/ark-su
 When the download of the zip archive is completed, follow these steps to install the plugin loader:
 
 1. Make sure that you launched the ASA server at least once without the plugin loader.
-2. Stop the ASA server container by running `docker stop asa-server-1`
-3. Enter the server files binary directory as `root` user: `cd /var/lib/docker/volumes/asa-server_server-files-1/_data/ShooterGame/Binaries/Win64`
+2. Stop the ASA server container by running `docker stop asa-server`
+3. Enter the server files binary directory as `root` user: `cd /var/lib/docker/volumes/asa-server_server-files/_data/ShooterGame/Binaries/Win64`
 4. Place the downloaded zip archive in that directory (the name of the archive must start with `AsaApi_`). Do not unzip the content.
 5. Restart your server using `docker compose up -d`
 
-The installation happens automatically by the container start script. You can follow the installation process by running `docker logs -f asa-server-1`. Once the log says "Detected ASA Server API loader. Launching server through AsaApiLoader.exe",
+The installation happens automatically by the container start script. You can follow the installation process by running `docker logs -f asa-server`. Once the log says "Detected ASA Server API loader. Launching server through AsaApiLoader.exe",
 the installation is complete. In the following log lines your should see the start process of the plugin loader.
 
 How to install plugins is described on gameservershub.com, from which you obtained the plugin loader. Please refer to their guide instead.
@@ -453,20 +471,44 @@ This is a list of all official map names with their map id. The map id is used a
 
 **NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
 
+## Building the Container Image
+
+This repository uses a standard Dockerfile for building the container image. You can build locally using [Taskfile](https://taskfile.dev):
+
+```bash
+# Install Taskfile (if not already installed)
+# See: https://taskfile.dev/installation/
+
+# Build the image
+task build
+
+# Build and run a test server
+task dev
+
+# View all available tasks
+task --list
+```
+
+Or build directly with Docker:
+
+```bash
+docker build -t ghcr.io/jdogwilly/asa-linux-server:latest .
+```
+
 ## Updating the Container Image
 
 The container image will be updated from time to time. In general, we try to not break previous installations by an update, but to add certain features, it might be necessary to introduce backward incompatibilities.
-The default `docker-compose.yml` file suggests to use the `latest` branch of the container image. If you want to stay on one specific version, you can force the container image to launch with that said version, by
-changing `image: "mschnitzer/asa-linux-server:latest"` in your `docker-compose.yml` file (as outlined below) to whatever version suits you. A list of all versions can be
-found [here](https://hub.docker.com/r/mschnitzer/asa-linux-server/tags).
+The default `docker-compose.yml` file suggests to use the `latest` tag of the container image. If you want to stay on one specific version, you can force the container image to launch with that said version, by
+changing `image: "ghcr.io/jdogwilly/asa-linux-server:latest"` in your `docker-compose.yml` file (as outlined below) to whatever version suits you. A list of all versions can be
+found [here](https://github.com/jdogwilly/ark-survival-ascended-linux-container-image/releases).
 
 For example:
 
-If you want to stay on version `1.4.0` for your ASA server, you must change `image: "mschnitzer/asa-linux-server:latest"` to `image: "mschnitzer/asa-linux-server:1.4.0"`.
+If you want to stay on version `1.5.0` for your ASA server, you must change `image: "ghcr.io/jdogwilly/asa-linux-server:latest"` to `image: "ghcr.io/jdogwilly/asa-linux-server:1.5.0"`.
 
-Even if you stay on branch `latest`, your container image won't be updated automatically if we roll out an update. You explicitly need to run `docker pull mschnitzer/asa-linux-server:latest` to obtain the newest version.
+Even if you stay on tag `latest`, your container image won't be updated automatically if we roll out an update. You explicitly need to run `docker pull ghcr.io/jdogwilly/asa-linux-server:latest` to obtain the newest version.
 
-We strongly suggest to read through the [releases page](https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/releases) of this repository to see what has changed between versions. If there's
+We strongly suggest to read through the [releases page](https://github.com/jdogwilly/ark-survival-ascended-linux-container-image/releases) of this repository to see what has changed between versions. If there's
 a backward incompatibility being introduced, it will be mentioned there with an explanation what to change.
 
 ## Common Issues
@@ -509,9 +551,9 @@ But before we start fixing it, you should make sure that this is really the issu
 
 #### Debugging with curl
 
-1. Log in to the container `docker exec -ti -u root asa-server-1 bash`
-2. Run `zypper --no-gpg-checks ref`
-3. Install curl `zypper in -y curl`
+1. Log in to the container `docker exec -ti -u root asa-server bash`
+2. Update apt: `apt-get update`
+3. Install curl `apt-get install -y curl`
 4. Run `curl icanhazip.com` (`icanhazip.com` is a service that tells you from what ip address it received traffic from)
 
 If the service responds with an IP that you have not assigned to the ASA server in the `docker-compose.yml` file, then it's very likely that this is the reason why you are getting a "Connection Timeout" error.

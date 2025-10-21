@@ -1,0 +1,59 @@
+version: '3'
+
+vars:
+  IMAGE_NAME: ghcr.io/jdogwilly/asa-linux-server
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo "dev"
+
+tasks:
+  build:
+    desc: Build the Docker image
+    cmds:
+      - docker build -t {{.IMAGE_NAME}}:latest -t {{.IMAGE_NAME}}:{{.VERSION}} .
+
+  run:
+    desc: Run a test container
+    cmds:
+      - |
+        docker run -d \
+          --name asa-server-test \
+          -p 7777:7777/udp \
+          -p 27020:27020/tcp \
+          -e ASA_START_PARAMS="TheIsland_WP?listen?Port=7777?RCONPort=27020?RCONEnabled=True -WinLiveMaxPlayers=50" \
+          -e ENABLE_DEBUG=0 \
+          {{.IMAGE_NAME}}:latest
+      - echo "Container started. View logs with: docker logs -f asa-server-test"
+
+  stop:
+    desc: Stop and remove test container
+    cmds:
+      - docker stop asa-server-test || true
+      - docker rm asa-server-test || true
+
+  logs:
+    desc: View logs from test container
+    cmds:
+      - docker logs -f asa-server-test
+
+  push:
+    desc: Push image to GitHub Container Registry
+    cmds:
+      - docker push {{.IMAGE_NAME}}:latest
+      - docker push {{.IMAGE_NAME}}:{{.VERSION}}
+
+  login:
+    desc: Login to GitHub Container Registry
+    cmds:
+      - echo "Use: echo $GITHUB_TOKEN | docker login ghcr.io -u jdogwilly --password-stdin"
+
+  clean:
+    desc: Remove local images and test containers
+    cmds:
+      - task: stop
+      - docker rmi {{.IMAGE_NAME}}:latest {{.IMAGE_NAME}}:{{.VERSION}} || true
+
+  dev:
+    desc: Build and run in one command
+    cmds:
+      - task: build
+      - task: run
