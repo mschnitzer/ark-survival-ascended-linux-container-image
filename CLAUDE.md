@@ -112,10 +112,52 @@ Python-based tool for server administration (stdlib only, zero dependencies). Ar
 
 ### RCON Implementation
 
-- Custom implementation of Valve RCON protocol over TCP
-- Auto-discovers password from `ASA_START_PARAMS` or `GameUserSettings.ini`
-- Auto-discovers port from same sources
-- Usage: `docker exec asa-server-1 asa-ctrl rcon --exec 'saveworld'`
+The `asa-ctrl` tool includes a custom implementation of the Valve RCON protocol over TCP (stdlib only, zero dependencies).
+
+**Configuration Discovery (Priority Order):**
+
+The tool supports multiple configuration methods, checked in this order:
+
+1. **Environment Variables** (Recommended for Kubernetes/Production):
+   - `ADMIN_PASSWORD` - RCON admin password
+   - `RCON_PORT` - RCON port (defaults to 27020 if not specified)
+   - `RCON_ENABLED` - Enable/disable RCON (accepts: true/false/1/0, defaults to true)
+
+2. **ASA_START_PARAMS** (Legacy/Docker Compose):
+   - `?ServerAdminPassword=yourpassword` - RCON password parameter
+   - `?RCONPort=27020` - RCON port parameter
+   - `?RCONEnabled=True` - RCON enabled flag
+
+3. **GameUserSettings.ini** (Fallback):
+   - `[ServerSettings]` section
+   - `ServerAdminPassword=yourpassword`
+   - `RCONPort=27020`
+   - `RCONEnabled=True`
+
+**Usage Examples:**
+
+```bash
+# Using environment variables (Kubernetes recommended)
+docker exec asa-server-1 asa-ctrl rcon --exec 'saveworld'
+
+# The tool auto-discovers configuration from ADMIN_PASSWORD and RCON_PORT env vars
+```
+
+**Configuration Methods:**
+
+```yaml
+# Kubernetes ConfigMap/Secret approach
+environment:
+  - ADMIN_PASSWORD: "your-secure-password"  # From secret
+  - RCON_PORT: "27020"
+  - RCON_ENABLED: "true"
+```
+
+```yaml
+# Docker Compose ASA_START_PARAMS approach (legacy)
+environment:
+  - ASA_START_PARAMS: "?ServerAdminPassword=yourpass?RCONPort=27020?RCONEnabled=True"
+```
 
 ## CI/CD
 
@@ -137,7 +179,7 @@ Version tags should follow semantic versioning (e.g., `v1.5.0`). GitHub Actions 
 ### `Dockerfile`
 
 - Standard Dockerfile for building the container
-- Multi-layer build: base packages → user setup → application files → Ruby gems
+- Multi-layer build: base packages → user setup → application files → Python package
 - Version managed via git tags (not in Dockerfile)
 - All dependencies explicitly declared
 

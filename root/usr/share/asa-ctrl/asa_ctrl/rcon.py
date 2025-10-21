@@ -7,7 +7,12 @@ from dataclasses import dataclass
 from typing import Optional
 
 from . import config
-from .errors import RconAuthenticationError, RconPasswordNotFoundError, RconPortNotFoundError
+from .errors import (
+    RconAuthenticationError,
+    RconPasswordNotFoundError,
+    RconPortNotFoundError,
+    RconNotEnabledError
+)
 
 
 # RCON packet types (Valve RCON protocol)
@@ -108,7 +113,8 @@ def exec_command(
     server_ip: str,
     rcon_port: int,
     rcon_command: str,
-    password: str
+    password: str,
+    check_enabled: bool = True
 ) -> RconPacket:
     """
     Execute an RCON command on the server.
@@ -118,13 +124,22 @@ def exec_command(
         rcon_port: The RCON port
         rcon_command: The command to execute
         password: The RCON password
+        check_enabled: Whether to check if RCON is enabled before connecting (default: True)
 
     Returns:
         The response packet
 
     Raises:
         RconAuthenticationError: If authentication fails
+        RconNotEnabledError: If RCON is not enabled on the server
     """
+    # Check if RCON is enabled before attempting connection
+    if check_enabled and not is_rcon_enabled():
+        raise RconNotEnabledError(
+            "RCON is not enabled on the server. Set RCON_ENABLED=true or "
+            "add ?RCONEnabled=True to ASA_START_PARAMS"
+        )
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
@@ -142,13 +157,23 @@ def identify_password() -> str:
     """
     Auto-discover the RCON password from environment or config files.
 
+    Priority order:
+    1. ADMIN_PASSWORD environment variable
+    2. ASA_START_PARAMS ServerAdminPassword parameter
+    3. GameUserSettings.ini [ServerSettings] ServerAdminPassword
+
     Returns:
         The RCON password
 
     Raises:
         RconPasswordNotFoundError: If password cannot be found
     """
-    # Try ASA_START_PARAMS environment variable first
+    # Try ADMIN_PASSWORD environment variable first (Kubernetes-friendly)
+    password = os.environ.get('ADMIN_PASSWORD')
+    if password:
+        return password
+
+    # Try ASA_START_PARAMS environment variable
     start_params = os.environ.get('ASA_START_PARAMS')
     if start_params:
         password = config.parse_start_param(start_params, 'ServerAdminPassword')
@@ -169,13 +194,21 @@ def identify_port() -> int:
     """
     Auto-discover the RCON port from environment or config files.
 
+    Priority order:
+    1. RCON_PORT environment variable
+    2. ASA_START_PARAMS RCONPort parameter
+    3. GameUserSettings.ini [ServerSettings] RCONPort
+    4. Default to 27020 (ARK standard RCON port)
+
     Returns:
         The RCON port number
-
-    Raises:
-        RconPortNotFoundError: If port cannot be found
     """
-    # Try ASA_START_PARAMS environment variable first
+    # Try RCON_PORT environment variable first (Kubernetes-friendly)
+    port_str = os.environ.get('RCON_PORT')
+    if port_str:
+        return int(port_str)
+
+    # Try ASA_START_PARAMS environment variable
     start_params = os.environ.get('ASA_START_PARAMS')
     if start_params:
         port_str = config.parse_start_param(start_params, 'RCONPort')
@@ -189,4 +222,41 @@ def identify_port() -> int:
         if port_str:
             return int(port_str)
 
-    raise RconPortNotFoundError("RCON port not found in configuration")
+    # Default to ARK's standard RCON port
+    return 27020
+
+
+def is_rcon_enabled() -> bool:
+    """
+    Check if RCON is enabled on the server.
+
+    Priority order:
+    1. RCON_ENABLED environment variable (accepts: true/false/1/0/True/False)
+    2. ASA_START_PARAMS RCONEnabled parameter
+    3. GameUserSettings.ini [ServerSettings] RCONEnabled
+    4. Default to True (assume enabled)
+
+    Returns:
+        True if RCON is enabled, False otherwise
+    """
+    # Try RCON_ENABLED environment variable first (Kubernetes-friendly)
+    enabled_str = os.environ.get('RCON_ENABLED')
+    if enabled_str:
+        return enabled_str.lower() in ('true', '1', 'yes')
+
+    # Try ASA_START_PARAMS environment variable
+    start_params = os.environ.get('ASA_START_PARAMS')
+    if start_params:
+        enabled_str = config.parse_start_param(start_params, 'RCONEnabled')
+        if enabled_str:
+            return enabled_str.lower() in ('true', '1', 'yes')
+
+    # Try GameUserSettings.ini
+    game_config = config.get_game_user_settings()
+    if game_config and game_config.has_section('ServerSettings'):
+        enabled_str = game_config.get('ServerSettings', 'RCONEnabled', fallback=None)
+        if enabled_str:
+            return enabled_str.lower() in ('true', '1', 'yes')
+
+    # Default to True (assume RCON is enabled)
+    return True

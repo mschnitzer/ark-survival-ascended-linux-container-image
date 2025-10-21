@@ -9,6 +9,7 @@ from .errors import (
     RconAuthenticationError,
     RconPasswordNotFoundError,
     RconPortNotFoundError,
+    RconNotEnabledError,
     ModAlreadyEnabledError
 )
 
@@ -64,6 +65,13 @@ def handle_rcon_command(args: argparse.Namespace) -> None:
             "either as start parameter ?RCONPort=27020 or in GameUserSettings.ini "
             "in the [ServerSettings] section as RCONPort=27020",
             exit_codes.RCON_PASSWORD_NOT_FOUND
+        )
+    except RconNotEnabledError:
+        exit_with_error(
+            "RCON is not enabled on the server. Enable it by setting RCON_ENABLED=true "
+            "environment variable, or by adding ?RCONEnabled=True to ASA_START_PARAMS, "
+            "or by adding RCONEnabled=True to GameUserSettings.ini [ServerSettings] section.",
+            exit_codes.RCON_NOT_ENABLED
         )
     except RconAuthenticationError:
         exit_with_error(

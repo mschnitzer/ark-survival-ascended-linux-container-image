@@ -21,6 +21,11 @@ class RconPortNotFoundError(AsaCtrlError):
     pass
 
 
+class RconNotEnabledError(AsaCtrlError):
+    """Raised when RCON is not enabled on the server."""
+    pass
+
+
 class ModAlreadyEnabledError(AsaCtrlError):
     """Raised when attempting to enable a mod that is already enabled."""
     pass
