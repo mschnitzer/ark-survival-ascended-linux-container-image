@@ -33,3 +33,11 @@ assets/
 *.log
 tmp/
 temp/
+
+# Python development files
+root/usr/share/asa-ctrl/.venv
+root/usr/share/asa-ctrl/.pytest_cache
+root/usr/share/asa-ctrl/.coverage
+root/usr/share/asa-ctrl/uv.lock
+**/__pycache__
+**/*.pyc

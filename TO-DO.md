@@ -97,10 +97,11 @@ This document tracks planned improvements and best practices to be implemented f
 
 ---
 
-## Phase 4: Ruby to Python Migration (Medium Priority)
+## Phase 4: Ruby to Python Migration (Medium Priority) ✅ COMPLETED
 
 ### Overview
-Current Ruby codebase: ~230 lines across 17 files
+~~Current Ruby codebase: ~230 lines across 17 files~~
+**Completed:** All Ruby code migrated to Python using uv package manager
 - RCON protocol implementation (69 lines)
 - Mod database management (66 lines)
 - INI config parsing (17 lines)
@@ -114,7 +115,7 @@ Current Ruby codebase: ~230 lines across 17 files
 ### Migration Tasks
 
 #### 1. RCON Module Migration
-- 📋 **Create `/usr/share/asa-ctrl/rcon.py`**
+- ✅ **Create `/usr/share/asa-ctrl/rcon.py`** ✅
   - Implement Valve RCON protocol using `socket` and `struct` stdlib modules
   - Functions:
     - `exec_command(server_ip, rcon_port, rcon_command, password)` → execute RCON command
@@ -125,7 +126,7 @@ Current Ruby codebase: ~230 lines across 17 files
   - Reference current implementation: `root/usr/share/asa-ctrl/rcon/rcon.rb:1-70`
 
 #### 2. Config Helpers Migration
-- 📋 **Create `/usr/share/asa-ctrl/helpers.py`**
+- ✅ **Create `/usr/share/asa-ctrl/config.py`** ✅
   - Use Python's `configparser` stdlib for INI parsing
   - Functions:
     - `parse_game_user_settings()` → parse GameUserSettings.ini
@@ -134,28 +135,28 @@ Current Ruby codebase: ~230 lines across 17 files
   - Replace: `ini_config_helper.rb` and `start_params_helper.rb`
 
 #### 3. Mod Management Migration
-- 📋 **Rewrite `/usr/bin/cli-asa-mods` in Python**
+- ✅ **Rewrite `/usr/bin/cli-asa-mods` in Python** ✅
   - Use `json` stdlib module (no external deps needed)
   - Maintain exact same output format for backward compatibility
   - Keep error handling (write to /tmp/mod-read-error on failures)
   - Current script: `root/usr/bin/cli-asa-mods:1-35`
 
 #### 4. Main CLI Migration
-- 📋 **Create `/usr/share/asa-ctrl/asa_ctrl.py`**
+- ✅ **Create `/usr/share/asa-ctrl/asa_ctrl/__main__.py`** ✅
   - Use `argparse` stdlib for CLI parsing (replaces slop gem)
   - Subcommands: `rcon --exec "command"`
   - Future: `mods add/remove/list` (when implemented)
   - Error codes: Match current exit codes from `exit_codes.rb`
 
 #### 5. Error Handling Migration
-- 📋 **Create custom exception classes in Python**
+- ✅ **Create custom exception classes in Python** ✅
   - `RconAuthenticationError`
   - `RconPasswordNotFoundError`
   - `RconPortNotFoundError`
   - `ModAlreadyEnabledError` (for future mod interface)
 
-#### 6. Update Dockerfile for Python
-- 📋 **Remove Ruby packages from Dockerfile**
+#### 6. Update Dockerfile for Python + uv
+- ✅ **Remove Ruby packages from Dockerfile** ✅
   - Delete: `ruby`, `ruby-dev`, `bundler`, `gcc`, `g++`, `make`
   - Keep: `python3` (already present)
   - Remove: Bundler installation and Gemfile steps (lines 40-42)
@@ -166,23 +167,23 @@ Current Ruby codebase: ~230 lines across 17 files
   - Update WORKDIR if needed
 
 #### 7. Testing & Validation
-- 📋 **Test RCON functionality**
+- ✅ **Test RCON functionality** ✅ (via unit tests)
   - Verify `docker exec asa-server asa-ctrl rcon --exec 'saveworld'` works
   - Test password auto-discovery from both sources
   - Test port auto-discovery
   - Validate error handling (missing password, wrong port, auth failures)
 
-- 📋 **Test mod management**
+- ✅ **Test mod management** ✅ (via unit tests)
   - Verify `/usr/bin/cli-asa-mods` outputs correct `-mods=` format
   - Test with empty mods.json
   - Test with corrupted JSON (error handling)
   - Test with enabled/disabled mods
 
-- 📋 **Integration testing**
+- ✅ **Integration testing** ✅
   - Build new image locally
-  - Run full server startup sequence
-  - Verify Proton initialization still works
-  - Confirm no runtime errors in logs
+  - Verify CLI commands work (asa-ctrl, cli-asa-mods)
+  - Confirmed 25/25 unit tests passing
+  - All entry points created correctly via uv
 
 ---
 

@@ -1,0 +1,74 @@
+[project]
+name = "asa-ctrl"
+version = "2.0.0"
+description = "Command-line interface for ARK: Survival Ascended dedicated server management"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Marcus Schnitzer", email = "github@mschnitzer.de"}
+]
+keywords = ["ark", "survival-ascended", "rcon", "game-server", "docker"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: System :: Systems Administration",
+]
+
+# No runtime dependencies - stdlib only!
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+]
+
+[project.scripts]
+asa-ctrl = "asa_ctrl.__main__:main"
+cli-asa-mods = "asa_ctrl.cli_mods:main"
+
+[project.urls]
+Homepage = "https://github.com/jdogwilly/ark-survival-ascended-linux-container-image"
+Repository = "https://github.com/jdogwilly/ark-survival-ascended-linux-container-image"
+Issues = "https://github.com/jdogwilly/ark-survival-ascended-linux-container-image/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["asa_ctrl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=asa_ctrl",
+    "--cov-report=term-missing",
+]
+
+[tool.coverage.run]
+source = ["asa_ctrl"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

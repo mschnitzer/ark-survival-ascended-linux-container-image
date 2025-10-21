@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repository provides a Docker container image for running ARK: Survival Ascended dedicated servers on Linux. The container uses Ubuntu 24.04 as the base OS and runs Windows game binaries through Proton (GE-Proton10-17). The image is published to GitHub Container Registry at `ghcr.io/jdogwilly/asa-linux-server` and includes a Ruby-based control tool (`asa-ctrl`) for server management.
+This repository provides a Docker container image for running ARK: Survival Ascended dedicated servers on Linux. The container uses Ubuntu 24.04 as the base OS and runs Windows game binaries through Proton (GE-Proton10-17). The image is published to GitHub Container Registry at `ghcr.io/jdogwilly/asa-linux-server` and includes a Python-based control tool (`asa-ctrl`) for server management.
 
 ## Building the Container Image
 
@@ -23,9 +23,9 @@ docker build -t ghcr.io/jdogwilly/asa-linux-server:latest .
 
 **Important Dockerfile details**:
 - Base OS: Ubuntu 24.04 (Noble Numbat)
-- System packages: 32-bit libs, Python3, Ruby, build tools
+- System packages: 32-bit libs, Python3 (no build tools needed)
 - User `gameserver` (UID/GID: 25000)
-- Ruby gems installed via Bundler
+- Python package `asa-ctrl` installed via `uv` (ultra-fast Python package installer)
 - Entry point: `/usr/bin/start_server`
 
 ## Development Workflow
@@ -45,13 +45,26 @@ task logs
 task stop
 ```
 
-For Ruby debugging, set `DEV=1` environment variable and use `byebug` in the code
+For Python development and testing:
+```bash
+# Navigate to the Python package
+cd root/usr/share/asa-ctrl
+
+# Run tests with uv
+uv run pytest
+
+# Run tests with coverage
+uv run pytest --cov=asa_ctrl
+
+# Install in development mode locally
+uv pip install -e .
+```
 
 ### Container Entry Points
 
 - Main entry point: `/usr/bin/start_server` (Bash script)
-- Server control CLI: `/usr/bin/asa-ctrl` (symlink to `/usr/share/asa-ctrl/main.rb`)
-- Mod management helper: `/usr/bin/cli-asa-mods`
+- Server control CLI: `/usr/local/bin/asa-ctrl` (Python package entry point)
+- Mod management helper: `/usr/local/bin/cli-asa-mods` (Python package entry point)
 
 ### Important Paths in Container
 
@@ -77,15 +90,18 @@ For Ruby debugging, set `DEV=1` environment variable and use `byebug` in the cod
 
 ### `asa-ctrl` CLI Tool
 
-Ruby-based tool for server administration. Architecture:
-- **CLI Interfaces** (`cli/interfaces/`): User-facing command handlers
-  - `rcon_interface.rb`: Execute RCON commands
-  - `mods_interface.rb`: Mod management (future)
-- **Helpers** (`helpers/`):
-  - `ini_config_helper.rb`: Parse `GameUserSettings.ini` and `Game.ini`
-  - `start_params_helper.rb`: Parse ASA start parameters
-- **RCON Module** (`rcon/rcon.rb`): Valve RCON protocol implementation
-- **Mods Database** (`mods/database.rb`): JSON-based mod tracking
+Python-based tool for server administration (stdlib only, zero dependencies). Architecture:
+- **Package Location**: `/usr/share/asa-ctrl/asa_ctrl/`
+- **Core Modules**:
+  - `__main__.py`: CLI entry point using `argparse`
+  - `rcon.py`: Valve RCON protocol implementation using `socket` and `struct`
+  - `config.py`: INI and start parameter parsing using `configparser`
+  - `mods.py`: JSON-based mod database management
+  - `cli_mods.py`: Standalone mod parameter generator
+  - `errors.py`: Custom exception classes
+  - `exit_codes.py`: Exit code constants
+- **Testing**: Unit tests in `/usr/share/asa-ctrl/tests/` (run with `uv run pytest`)
+- **Package Management**: Installed via `uv` with entry points defined in `pyproject.toml`
 
 ### Mod Management
 
@@ -191,7 +207,9 @@ docker exec -ti -u root asa-server bash  # as root
 ### Updating Dependencies
 
 **System packages**: Edit `Dockerfile` and rebuild
-**Ruby gems**: Update `root/usr/share/asa-ctrl/Gemfile` then rebuild
+**Python packages**: The `asa-ctrl` package has zero runtime dependencies (stdlib only)
+- Development dependencies defined in `pyproject.toml` under `[project.optional-dependencies]`
+- Update with: `cd root/usr/share/asa-ctrl && uv sync --extra dev`
 
 ### Testing RCON Locally
 

@@ -1,5 +1,0 @@
-require_relative './base_error.rb'
-require_relative './mod_already_enabled_error.rb'
-require_relative './rcon_authentication_error.rb'
-require_relative './rcon_password_not_found_error.rb'
-require_relative './rcon_port_not_found_error.rb'

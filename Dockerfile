@@ -33,31 +33,24 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     # ASA dependencies
     libfreetype6 \
-    # Ruby and development tools
-    ruby \
-    ruby-dev \
-    bundler \
-    gcc \
-    g++ \
-    make \
     && rm -rf /var/lib/apt/lists/*
 
 # Create gameserver user and group with specific UID/GID
 RUN groupadd -g 25000 gameserver && \
     useradd -u 25000 -g 25000 -m -d /home/gameserver -s /bin/bash gameserver
 
+# Install uv - the fast Python package installer
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
 # Copy application files
 COPY root/usr /usr
 
-# Install Ruby gems
+# Install the asa-ctrl package using uv (creates entry points automatically)
 WORKDIR /usr/share/asa-ctrl
-RUN bundle install
+RUN uv pip install --system --break-system-packages --no-cache .
 
-# Set up permissions and symlinks
-RUN chmod 0755 /usr/bin/start_server && \
-    chmod 0755 /usr/bin/cli-asa-mods && \
-    chmod 0755 /usr/share/asa-ctrl/main.rb && \
-    ln -sf /usr/share/asa-ctrl/main.rb /usr/bin/asa-ctrl
+# Set permissions for start_server script
+RUN chmod 0755 /usr/bin/start_server
 
 # Switch to gameserver user
 USER gameserver
