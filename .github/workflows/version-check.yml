@@ -1,0 +1,31 @@
+name: Version Bump Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          # Fetch full history so we can compare branches
+          fetch-depth: 0
+
+      - name: Fetch base branch
+        run: |
+          git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+
+      - name: Make check script executable
+        run: chmod +x scripts/check-version-bump.sh
+
+      - name: Check if VERSION was bumped
+        env:
+          GITHUB_ACTIONS: true
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: |
+          bash scripts/check-version-bump.sh

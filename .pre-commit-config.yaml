@@ -1,0 +1,16 @@
+# Pre-commit hook configuration
+# Install: uv tool install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Local hooks (custom scripts in this repo)
+  - repo: local
+    hooks:
+      - id: check-version-bump
+        name: Check VERSION bump for runtime changes
+        entry: bash -c 'PRE_COMMIT=1 scripts/check-version-bump.sh'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+        verbose: true

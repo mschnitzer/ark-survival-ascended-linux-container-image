@@ -3,6 +3,15 @@
 .gitattributes
 .github/
 
+# Development scripts
+scripts/
+
+# Pre-commit configuration
+.pre-commit-config.yaml
+
+# Version file (passed as build arg)
+VERSION
+
 # Documentation
 *.md
 README.md
