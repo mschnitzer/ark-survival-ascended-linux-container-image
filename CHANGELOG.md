@@ -16,12 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trivy security vulnerability scanning in GitHub Actions workflow
 - SARIF report upload to GitHub Security tab for vulnerability tracking
 - Dynamic build arguments (VERSION, BUILD_DATE, VCS_REF) for reproducible builds
+- CONTRIBUTING.md with comprehensive contribution guidelines, versioning strategy, commit conventions, and testing procedures
 
 ### Changed
 - Dockerfile now uses ARG-based versioning instead of hardcoded version string
 - GitHub Actions workflow now reads version from VERSION file
 - Taskfile.yml now reads version from VERSION file and passes build arguments
 - GitHub Actions permissions updated to include security-events for SARIF uploads
+- CLAUDE.md now includes references to all important documentation files (CONTRIBUTING.md, TO-DO.md, CHANGELOG.md)
 
 ### Security
 - Added automated vulnerability scanning with Trivy on every build

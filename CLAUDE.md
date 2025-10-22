@@ -6,6 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repository provides a Docker container image for running ARK: Survival Ascended dedicated servers on Linux. The container uses Ubuntu 24.04 as the base OS and runs Windows game binaries through Proton (GE-Proton10-17). The image is published to GitHub Container Registry at `ghcr.io/jdogwilly/asa-linux-server` and includes a Python-based control tool (`asa-ctrl`) for server management.
 
+## Important Documentation
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Guidelines for external contributors, versioning strategy, commit conventions, and testing procedures
+- **[TO-DO.md](TO-DO.md)**: Project roadmap with planned improvements organized by phase and priority
+- **[CHANGELOG.md](CHANGELOG.md)**: Version history following [Keep a Changelog](https://keepachangelog.com/) format
+- **[README.md](README.md)**: User-facing documentation with installation guide and server administration
+
 ## Building the Container Image
 
 The container image is built using a standard Dockerfile:
