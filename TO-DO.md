@@ -198,26 +198,30 @@ This document tracks planned improvements and best practices to be implemented f
 ## Phase 5: CI/CD Enhancements (Medium Priority)
 
 ### GitHub Actions Improvements
-- ✅ **Add PR testing workflow**
+- ✅ **Add PR testing workflow** ✅
   - Build image on PRs but don't push
   - Run basic validation tests
   - Report image size changes in PR comments
 
-- 📋 **Add image size reporting**
-  - Use `dive` or similar tool to analyze layers
-  - Comment on PRs with size comparison vs main branch
-  - Alert if image grows unexpectedly
+- ✅ **Add image size reporting** ✅
+  - Compares PR image size vs main branch image
+  - Posts comment on PRs with size comparison table
+  - Alerts if image grows >5% or >50MB
+  - Implemented in `.github/workflows/docker-publish.yml` (Job 3: size-report)
 
-- 📋 **Implement dependency caching**
-  - Already using `cache-from: type=gha` ✅
-  - Optimize cache hit rate
-  - Document cache behavior
+- ✅ **Implement dependency caching** ✅
+  - Using `cache-from: type=gha` and `cache-to: type=gha,mode=max`
+  - Configured in both PR builds and main/tag builds
+  - Optimizes build times by reusing Docker layers
 
 ### Automated Updates
-- 📋 **Add Dependabot configuration**
-  - Monitor Dockerfile base image updates
-  - Monitor GitHub Actions version updates
-  - Create PRs for security updates
+- ✅ **Dependency monitoring with Renovate** ✅
+  - Monitors Dockerfile base image updates (Ubuntu 24.04)
+  - Monitors GitHub Actions version updates (pins digests)
+  - Monitors Ubuntu apt package versions (custom regex manager)
+  - Auto-merges digest updates
+  - Configured in `renovate.json`
+  - **Note**: Using Renovate instead of Dependabot (more flexible)
 
 - 📋 **Add workflow for Proton version updates**
   - Check GloriousEggroll releases for new Proton versions
@@ -340,5 +344,5 @@ This TO-DO.md file should be updated as items are completed:
 - Add new items as they're discovered
 - Review quarterly for priority adjustments
 
-**Last Updated**: 2025-10-22 (Phase 2: Secret Scanning completed)
+**Last Updated**: 2025-10-22 (Phase 5: CI/CD Enhancements - marked completed items)
 **Next Review**: 2026-01-20
