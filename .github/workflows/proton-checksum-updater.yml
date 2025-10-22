@@ -68,7 +68,7 @@ jobs:
 
       - name: Commit checksum file
         if: steps.check-checksum.outputs.exists == 'false'
-        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5
+        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 # v7
         with:
           commit_message: "chore: add SHA512 checksum for Proton ${{ steps.extract-version.outputs.version }}"
           commit_user_name: "jdogwilly-renovate[bot]"
