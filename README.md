@@ -20,6 +20,7 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Applying server updates](#applying-server-updates)
   * [Daily restarts](#daily-restarts)
   * [Executing RCON commands](#executing-rcon-commands)
+  * [Health Checks](#health-checks)
 * [Setting up a second server / cluster](#setting-up-a-second-server--cluster)
 * [Adding Mods](#adding-mods)
   * [Adding Mod Maps](#adding-mod-maps)
@@ -360,6 +361,73 @@ docker exec -t asa-server asa-ctrl rcon --exec 'saveworld'
 ```
 
 **NOTE:** As opposed to ingame cheat commands, you must not put `admincheat` or `cheat` in front of the command.
+
+### Health Checks
+
+The container includes built-in health checks for both Docker and Kubernetes deployments. There are two types of health checks available:
+
+#### Liveness Check (Process-based)
+
+The liveness check verifies that the ARK server process is running. This is used by Docker's HEALTHCHECK feature and should be used for Kubernetes liveness probes.
+
+**Docker**: Automatically enabled via HEALTHCHECK directive
+- Checks every 30 seconds if the server process is running
+- Allows 10 minutes for initial downloads (SteamCMD, server files, Proton)
+- Requires 3 consecutive failures before marking container as unhealthy
+
+**Kubernetes liveness probe example**:
+```yaml
+livenessProbe:
+  exec:
+    command:
+      - /usr/bin/healthcheck-liveness
+  initialDelaySeconds: 600  # 10 minutes for initial setup
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+```
+
+#### Readiness Check (RCON-based)
+
+The readiness check verifies that the ARK server is accepting RCON connections and responding to commands. This validates that the server is fully operational and ready to accept players.
+
+**Kubernetes readiness probe example**:
+```yaml
+readinessProbe:
+  exec:
+    command:
+      - /usr/bin/healthcheck-readiness
+  initialDelaySeconds: 600  # 10 minutes for initial setup
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+```
+
+**Note**: The readiness check requires RCON to be enabled and configured. See [Executing RCON commands](#executing-rcon-commands) for setup instructions.
+
+#### Manual Health Check Testing
+
+You can manually test the health checks at any time:
+
+```bash
+# Test liveness (process check)
+docker exec asa-server /usr/bin/healthcheck-liveness
+echo $?  # 0 = healthy, 1 = unhealthy
+
+# Test readiness (RCON check)
+docker exec asa-server /usr/bin/healthcheck-readiness
+echo $?  # 0 = ready, 1 = not ready
+```
+
+#### Viewing Docker Health Status
+
+```bash
+# View health status in docker ps output
+docker ps
+
+# View detailed health check history
+docker inspect asa-server | grep -A 10 Health
+```
 
 ## Setting up a second server / cluster
 

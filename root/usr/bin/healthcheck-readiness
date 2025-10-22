@@ -1,0 +1,12 @@
+#!/bin/bash
+# Readiness probe: Check if the game server is accepting RCON connections
+# Used by Kubernetes to determine if pod should receive traffic
+# Exit 0 = ready, Exit 1 = not ready
+
+# Try to execute a lightweight RCON command
+# The asa-ctrl tool auto-discovers password and port from environment/config
+if /usr/local/bin/asa-ctrl rcon --exec "help" >/dev/null 2>&1; then
+    exit 0
+fi
+
+exit 1

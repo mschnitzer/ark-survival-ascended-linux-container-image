@@ -72,6 +72,33 @@ uv pip install -e .
 - Main entry point: `/usr/bin/start_server` (Bash script)
 - Server control CLI: `/usr/local/bin/asa-ctrl` (Python package entry point)
 - Mod management helper: `/usr/local/bin/cli-asa-mods` (Python package entry point)
+- Health check scripts:
+  - `/usr/bin/healthcheck-liveness` - Process-based liveness check (used by Docker HEALTHCHECK)
+  - `/usr/bin/healthcheck-readiness` - RCON-based readiness check (for Kubernetes)
+
+### Health Checks
+
+The container includes two health check scripts for monitoring server status:
+
+**Liveness Check** (`/usr/bin/healthcheck-liveness`):
+- Checks if ARK server process (`ArkAscendedServer.exe` or `AsaApiLoader.exe`) is running
+- Uses `pgrep` to verify process existence
+- Exit 0 = healthy, Exit 1 = unhealthy
+- Automatically used by Docker's HEALTHCHECK directive
+- Recommended for Kubernetes liveness probes
+
+**Readiness Check** (`/usr/bin/healthcheck-readiness`):
+- Validates server is accepting RCON connections
+- Executes lightweight RCON command via `asa-ctrl rcon --exec "help"`
+- Requires RCON to be enabled and configured
+- Exit 0 = ready, Exit 1 = not ready
+- Recommended for Kubernetes readiness probes
+
+**Docker HEALTHCHECK Configuration**:
+- Interval: 30s (checks every 30 seconds)
+- Timeout: 10s (each check gets 10 seconds)
+- Start period: 10m (allows time for SteamCMD, server files, and Proton downloads)
+- Retries: 3 (requires 3 consecutive failures before marking unhealthy)
 
 ### Important Paths in Container
 

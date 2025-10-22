@@ -233,11 +233,14 @@ This document tracks planned improvements and best practices to be implemented f
 ## Phase 6: Additional Best Practices (Low Priority)
 
 ### Health Checks
-- 📋 **Add HEALTHCHECK to Dockerfile**
-  - Check if ArkAscendedServer.exe process is running
-  - Alternative: Check if game port responds
-  - Useful for orchestration (Docker Swarm, Kubernetes)
-  - Example: `HEALTHCHECK CMD pgrep -f ArkAscendedServer.exe || exit 1`
+- ✅ **Add HEALTHCHECK to Dockerfile** ✅
+  - Created `/usr/bin/healthcheck-liveness` for process-based liveness checks
+  - Created `/usr/bin/healthcheck-readiness` for RCON-based readiness checks
+  - Added procps package (provides pgrep command)
+  - Configured Docker HEALTHCHECK with 10m start period, 30s interval, 3 retries
+  - Liveness check: Verifies ARK server process is running
+  - Readiness check: Validates server accepts RCON connections
+  - Documented for both Docker and Kubernetes deployments
 
 ### Logging Improvements
 - 📋 **Add structured logging**
@@ -344,5 +347,5 @@ This TO-DO.md file should be updated as items are completed:
 - Add new items as they're discovered
 - Review quarterly for priority adjustments
 
-**Last Updated**: 2025-10-22 (Phase 5: CI/CD Enhancements - marked completed items)
+**Last Updated**: 2025-10-22 (Phase 6: Health Checks - implemented Docker HEALTHCHECK and Kubernetes-ready probes)
 **Next Review**: 2026-01-20

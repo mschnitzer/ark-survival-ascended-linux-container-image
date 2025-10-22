@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automated Proton-GE version tracking and updates via Renovate
 - GitHub Action workflow to automatically calculate and commit SHA512 checksums for new Proton releases
 - Full automation of Proton version updates (version bump + checksum generation)
+- Docker HEALTHCHECK directive for automatic container health monitoring
+- `/usr/bin/healthcheck-liveness` script for process-based liveness checks (Docker HEALTHCHECK, Kubernetes liveness probes)
+- `/usr/bin/healthcheck-readiness` script for RCON-based readiness checks (Kubernetes readiness probes)
+- `procps` package installation for health check utilities (provides `pgrep` command)
+- Comprehensive health check documentation in README.md and CLAUDE.md with Docker and Kubernetes examples
 
 ### Changed
 - Dockerfile now uses ARG-based versioning instead of hardcoded version string

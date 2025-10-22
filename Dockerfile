@@ -66,6 +66,8 @@ ARG UNZIP_VERSION="6.0-28ubuntu4.1"
 ARG CA_CERTS_VERSION="20240203"
 # renovate: suite=noble depName=libfreetype6
 ARG LIBFREETYPE6_VERSION="2.13.2+dfsg-1build3"
+# renovate: suite=noble depName=procps
+ARG PROCPS_VERSION="2:4.0.4-4ubuntu3.2"
 
 # Install runtime packages only with pinned versions (optimized layer ordering - rarely changes)
 RUN apt-get update && apt-get install -y \
@@ -79,6 +81,8 @@ RUN apt-get update && apt-get install -y \
     ca-certificates=${CA_CERTS_VERSION} \
     # ASA dependencies
     libfreetype6=${LIBFREETYPE6_VERSION} \
+    # Health check utilities
+    procps=${PROCPS_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
 # Create gameserver user and group with specific UID/GID (rarely changes)
@@ -97,14 +101,23 @@ COPY --from=builder /usr/local/bin/cli-asa-mods /usr/local/bin/cli-asa-mods
 
 # Copy non-Python application files directly from source
 COPY root/usr/bin/start_server /usr/bin/start_server
+COPY root/usr/bin/healthcheck-liveness /usr/bin/healthcheck-liveness
+COPY root/usr/bin/healthcheck-readiness /usr/bin/healthcheck-readiness
 COPY root/usr/share/proton /usr/share/proton
 
-# Set permissions for start_server script
-RUN chmod 0755 /usr/bin/start_server
+# Set permissions for scripts
+RUN chmod 0755 /usr/bin/start_server /usr/bin/healthcheck-liveness /usr/bin/healthcheck-readiness
 
 # Switch to gameserver user
 USER gameserver
 WORKDIR /home/gameserver
+
+# Health check configuration
+# - Checks every 30s if the server process is running
+# - Allows 10m for initial downloads (SteamCMD + server files + Proton)
+# - Requires 3 consecutive failures before marking unhealthy
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10m --retries=3 \
+    CMD /usr/bin/healthcheck-liveness
 
 # Default entrypoint
 ENTRYPOINT ["/usr/bin/start_server"]
