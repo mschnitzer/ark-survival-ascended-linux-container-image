@@ -21,6 +21,17 @@
       ],
       "datasourceTemplate": "deb",
       "registryUrlTemplate": "https://archive.ubuntu.com/ubuntu?suite={{suite}}&components=main,universe,multiverse,restricted&binaryArch=amd64"
+    },
+    {
+      "customType": "regex",
+      "description": "Track GloriousEggroll Proton-GE releases in start_server script",
+      "fileMatch": ["^root/usr/bin/start_server$"],
+      "matchStrings": [
+        "PROTON_VERSION=\"(?<currentValue>\\d+-\\d+)\""
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "GloriousEggroll/proton-ge-custom",
+      "extractVersionTemplate": "^GE-Proton(?<version>.+)$"
     }
   ]
 }

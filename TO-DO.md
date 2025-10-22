@@ -223,10 +223,10 @@ This document tracks planned improvements and best practices to be implemented f
   - Configured in `renovate.json`
   - **Note**: Using Renovate instead of Dependabot (more flexible)
 
-- 📋 **Add workflow for Proton version updates**
-  - Check GloriousEggroll releases for new Proton versions
-  - Semi-automated PR creation when new stable release available
-  - Include SHA512 checksum verification
+- ✅ **Add workflow for Proton version updates** ✅
+  - Renovate monitors GloriousEggroll releases for new Proton versions
+  - Fully automated PR creation with version bump and SHA512 checksum
+  - GitHub Action automatically downloads tarball and calculates checksum
 
 ---
 

@@ -1,0 +1,88 @@
+name: Update Proton Checksum
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'root/usr/bin/start_server'
+
+jobs:
+  update-checksum:
+    # Only run on Renovate PRs that update Proton version
+    if: |
+      github.event.pull_request.user.type == 'Bot' &&
+      github.event.pull_request.user.login == 'jdogwilly-renovate[bot]' &&
+      startsWith(github.head_ref, 'renovate/')
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Proton version from start_server
+        id: extract-version
+        run: |
+          VERSION=$(grep -oP 'PROTON_VERSION="\K[^"]+' root/usr/bin/start_server)
+          echo "Detected Proton version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if checksum file already exists
+        id: check-checksum
+        run: |
+          CHECKSUM_FILE="root/usr/share/proton/GE-Proton${{ steps.extract-version.outputs.version }}.sha512sum"
+          if [ -f "$CHECKSUM_FILE" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Checksum file already exists: $CHECKSUM_FILE"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Checksum file does not exist, will create: $CHECKSUM_FILE"
+          fi
+
+      - name: Download Proton tarball and calculate checksum
+        if: steps.check-checksum.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.extract-version.outputs.version }}"
+          TARBALL_NAME="GE-Proton${VERSION}.tar.gz"
+          DOWNLOAD_URL="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton${VERSION}/${TARBALL_NAME}"
+
+          echo "Downloading Proton tarball from: $DOWNLOAD_URL"
+          wget -O "/tmp/${TARBALL_NAME}" "$DOWNLOAD_URL"
+
+          echo "Calculating SHA512 checksum..."
+          cd /tmp
+          sha512sum "${TARBALL_NAME}" > checksum.txt
+          cat checksum.txt
+
+          # Move checksum file to repo
+          mkdir -p "$GITHUB_WORKSPACE/root/usr/share/proton"
+          mv checksum.txt "$GITHUB_WORKSPACE/root/usr/share/proton/GE-Proton${VERSION}.sha512sum"
+
+          echo "Checksum file created successfully"
+
+      - name: Commit checksum file
+        if: steps.check-checksum.outputs.exists == 'false'
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5
+        with:
+          commit_message: "chore: add SHA512 checksum for Proton ${{ steps.extract-version.outputs.version }}"
+          commit_user_name: "jdogwilly-renovate[bot]"
+          commit_user_email: "219386028+jdogwilly-renovate[bot]@users.noreply.github.com"
+          file_pattern: 'root/usr/share/proton/*.sha512sum'
+
+      - name: Add comment to PR
+        if: steps.check-checksum.outputs.exists == 'false'
+        uses: marocchino/sticky-pull-request-comment@331f8f5b4a9b46330b0f00d5dc69d7aef0c3f01c # v2
+        with:
+          header: proton-checksum
+          message: |
+            ✅ **Proton Checksum Updated**
+
+            Automatically generated SHA512 checksum for **GE-Proton${{ steps.extract-version.outputs.version }}**
+
+            The checksum file has been added to this PR and is ready for review.

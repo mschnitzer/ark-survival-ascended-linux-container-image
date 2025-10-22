@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SARIF report upload to GitHub Security tab for vulnerability tracking
 - Dynamic build arguments (VERSION, BUILD_DATE, VCS_REF) for reproducible builds
 - CONTRIBUTING.md with comprehensive contribution guidelines, versioning strategy, commit conventions, and testing procedures
+- Automated Proton-GE version tracking and updates via Renovate
+- GitHub Action workflow to automatically calculate and commit SHA512 checksums for new Proton releases
+- Full automation of Proton version updates (version bump + checksum generation)
 
 ### Changed
 - Dockerfile now uses ARG-based versioning instead of hardcoded version string
