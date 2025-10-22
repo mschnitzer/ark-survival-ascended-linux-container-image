@@ -3,6 +3,17 @@
 # Run manually: pre-commit run --all-files
 
 repos:
+  # Gitleaks - Secret scanning
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: Gitleaks - Detect hardcoded secrets
+        description: Scan for secrets using Gitleaks
+        entry: gitleaks protect --verbose --redact --staged
+        language: golang
+        pass_filenames: false
+
   # Local hooks (custom scripts in this repo)
   - repo: local
     hooks:

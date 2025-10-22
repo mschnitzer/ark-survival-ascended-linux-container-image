@@ -68,10 +68,12 @@ This document tracks planned improvements and best practices to be implemented f
   - Rationale: Maximum reproducibility, automated security updates, clear audit trail
 
 ### Secret Scanning
-- 📋 **Add secret scanning to CI/CD**
-  - Use GitHub's built-in secret scanning
-  - Consider adding Gitleaks or TruffleHog to workflow
-  - Scan before allowing image builds
+- ✅ **Add secret scanning to CI/CD**
+  - GitHub's built-in secret scanning already enabled (0 alerts)
+  - Added Gitleaks to pre-commit hooks for developer-side prevention
+  - Added Gitleaks GitHub Action to CI/CD workflow (scans before builds)
+  - Created .gitleaks.toml configuration for custom rules
+  - Added .env and credential patterns to .gitignore
 
 ---
 
@@ -338,5 +340,5 @@ This TO-DO.md file should be updated as items are completed:
 - Add new items as they're discovered
 - Review quarterly for priority adjustments
 
-**Last Updated**: 2025-10-22 (Phase 1: Documentation & Foundation completed)
+**Last Updated**: 2025-10-22 (Phase 2: Secret Scanning completed)
 **Next Review**: 2026-01-20

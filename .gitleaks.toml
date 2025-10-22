@@ -1,0 +1,35 @@
+# Gitleaks Configuration
+# Docs: https://github.com/gitleaks/gitleaks/blob/master/README.md
+
+title = "ARK: Survival Ascended Container - Gitleaks Config"
+
+[extend]
+# Use Gitleaks' built-in rules as a baseline
+useDefault = true
+
+# Global allowlists (v8.21.2+ uses [[allowlists]] with double brackets)
+[[allowlists]]
+description = "Ignore test files and documentation"
+paths = [
+    '''tests/.*''',
+    '''\.github/.*\.md''',
+    '''CHANGELOG\.md''',
+    '''README\.md''',
+    '''CONTRIBUTING\.md''',
+]
+
+[[allowlists]]
+description = "Ignore example/placeholder values in documentation"
+regexTarget = "match"
+regexes = [
+    '''(?i)(example|sample|placeholder|your[-_]?password)''',
+    '''(?i)admin[-_]?password[-_]?here''',
+    '''(?i)change[-_]?me''',
+]
+stopwords = [
+    "example",
+    "sample",
+    "test",
+    "placeholder",
+    "dummy",
+]

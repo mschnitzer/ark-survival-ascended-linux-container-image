@@ -7,6 +7,7 @@ Thank you for your interest in contributing to this project! This document provi
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
 - [Python Development](#python-development)
+- [Secret Scanning](#secret-scanning)
 - [Versioning Strategy](#versioning-strategy)
 - [Commit Conventions](#commit-conventions)
 - [Testing Requirements](#testing-requirements)
@@ -146,6 +147,85 @@ uv pip install -e .
 - **Docstrings**: Include docstrings for public functions and classes
 - **Testing**: All new functionality must include unit tests
 
+## Secret Scanning
+
+This project uses multiple layers of secret scanning to prevent accidental exposure of credentials and sensitive data.
+
+### Pre-Commit Hooks
+
+**Gitleaks** is configured as a pre-commit hook to scan for secrets before they enter the git history.
+
+**Installation:**
+```bash
+# Install pre-commit (if not already installed)
+uv tool install pre-commit
+
+# Install the pre-commit hooks
+pre-commit install
+
+# (Optional) Run on all files to test
+pre-commit run --all-files
+```
+
+Once installed, Gitleaks will automatically scan your staged changes before each commit. If secrets are detected, the commit will be blocked.
+
+### GitHub Actions CI/CD
+
+Gitleaks also runs automatically in the CI/CD pipeline on:
+- All pull requests
+- Pushes to the `main` branch
+- Version tag pushes
+
+The workflow will fail if secrets are detected, preventing the image from being built or published.
+
+### Handling False Positives
+
+If Gitleaks detects a false positive (e.g., example values in documentation), you can add exceptions to `.gitleaks.toml`:
+
+**Example: Allowlist a specific path**
+```toml
+[[allowlists]]
+description = "Ignore example configurations"
+paths = [
+    '''examples/.*''',
+]
+```
+
+**Example: Allowlist a specific pattern**
+```toml
+[[allowlists]]
+description = "Ignore placeholder values"
+regexTarget = "match"
+regexes = [
+    '''(?i)example[-_]?password''',
+]
+```
+
+**Example: Allowlist a specific commit**
+```toml
+[[allowlists]]
+description = "Pre-existing secrets (migrated from history)"
+commits = [
+    "abc123def456789...",
+]
+```
+
+### Best Practices
+
+- **Never commit secrets**: Use environment variables or secrets management tools
+- **Use .gitignore**: The `.gitignore` file is configured to block common secret files (`.env`, `credentials.json`, etc.)
+- **Test locally**: Run `pre-commit run --all-files` before pushing to catch issues early
+- **Review carefully**: If Gitleaks blocks a commit, review the detected secret carefully before bypassing
+
+### Bypassing Secret Scanning (Not Recommended)
+
+If you absolutely must bypass Gitleaks for a specific commit (not recommended), you can use:
+```bash
+git commit --no-verify -m "Your commit message"
+```
+
+**Warning:** This bypasses all pre-commit hooks and should only be used in exceptional circumstances with maintainer approval.
+
 ## Versioning Strategy
 
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html) with a VERSION file as the single source of truth.
@@ -248,11 +328,23 @@ tests/test_*.py .........................                                [100%]
 ============================== 25 passed in 0.50s ==============================
 ```
 
-### 3. Security Scanning
+### 3. Secret Scanning
+
+Code must pass Gitleaks secret scanning with no detected secrets:
+```bash
+# Run Gitleaks manually (if not using pre-commit hooks)
+pre-commit run gitleaks --all-files
+```
+
+This is automatically enforced by:
+- Pre-commit hooks (if installed)
+- GitHub Actions on all PRs and pushes
+
+### 4. Security Scanning
 
 The image must pass Trivy vulnerability scanning with no HIGH or CRITICAL vulnerabilities. This is automatically checked by GitHub Actions on pull requests.
 
-### 4. Integration Testing (Optional but Recommended)
+### 5. Integration Testing (Optional but Recommended)
 
 Test the image by running a test server:
 ```bash
@@ -303,6 +395,7 @@ Before submitting your PR, ensure:
 ### Automated Checks
 
 When you create a PR, GitHub Actions will automatically:
+- Run Gitleaks secret scanning (fails if secrets detected)
 - Build the Docker image
 - Run Trivy security scanning
 - Upload vulnerability reports to GitHub Security tab
