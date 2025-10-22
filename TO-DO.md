@@ -59,10 +59,13 @@ This document tracks planned improvements and best practices to be implemented f
   - Exclude: `.git/`, `.github/`, `*.md`, `README.md`, `TO-DO.md`, `CLAUDE.md`
   - Reduces build context and prevents leaking unnecessary files
 
-- 📋 **Pin package versions in Dockerfile**
-  - Currently: `apt-get install -y lib32gcc-s1 python3 wget...`
-  - Pin specific versions for reproducibility
-  - Document why specific versions are chosen
+- ✅ **Pin package versions in Dockerfile**
+  - Pinned Ubuntu base image to digest (`ubuntu:24.04@sha256:...`)
+  - Pinned uv to version 0.9.5 (`ghcr.io/astral-sh/uv:0.9.5`)
+  - Pinned all apt packages using ARG variables with Renovate-compatible comments
+  - Package versions: python3 (3.12.3-0ubuntu2), lib32gcc-s1 (14.2.0-4ubuntu2~24.04), wget, tar, unzip, ca-certificates, libfreetype6
+  - Configured Renovate with customManagers to automatically track and update Ubuntu Noble packages
+  - Rationale: Maximum reproducibility, automated security updates, clear audit trail
 
 ### Secret Scanning
 - 📋 **Add secret scanning to CI/CD**

@@ -1,18 +1,22 @@
 #######################
 # Stage 1: Builder
 #######################
-FROM ubuntu:24.04 AS builder
+FROM ubuntu:24.04@sha256:66460d557b25769b102175144d538d88219c077c678a49af4afca6fbfc1b5252 AS builder
 
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install minimal build dependencies
+# Package versions for reproducible builds
+# renovate: suite=noble depName=python3
+ARG PYTHON3_VERSION="3.12.3-0ubuntu2"
+
+# Install minimal build dependencies with pinned versions
 RUN apt-get update && apt-get install -y \
-    python3 \
+    python3=${PYTHON3_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv - the fast Python package installer
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+# Install uv - the fast Python package installer (pinned version)
+COPY --from=ghcr.io/astral-sh/uv:0.9.5 /uv /usr/local/bin/uv
 
 # Copy only the Python package source code
 COPY root/usr/share/asa-ctrl /usr/share/asa-ctrl
@@ -24,7 +28,7 @@ RUN uv pip install --system --break-system-packages --no-cache .
 #######################
 # Stage 2: Runtime
 #######################
-FROM ubuntu:24.04
+FROM ubuntu:24.04@sha256:66460d557b25769b102175144d538d88219c077c678a49af4afca6fbfc1b5252
 
 # Build arguments for dynamic metadata
 ARG VERSION=dev
@@ -47,18 +51,34 @@ LABEL org.opencontainers.image.vendor="Community"
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install runtime packages only (optimized layer ordering - rarely changes)
+# Package versions for reproducible builds
+# renovate: suite=noble depName=lib32gcc-s1
+ARG LIB32GCC_VERSION="14.2.0-4ubuntu2~24.04"
+# renovate: suite=noble depName=python3
+ARG PYTHON3_VERSION="3.12.3-0ubuntu2"
+# renovate: suite=noble depName=wget
+ARG WGET_VERSION="1.21.4-1ubuntu4.1"
+# renovate: suite=noble depName=tar
+ARG TAR_VERSION="1.35+dfsg-3build1"
+# renovate: suite=noble depName=unzip
+ARG UNZIP_VERSION="6.0-28ubuntu4.1"
+# renovate: suite=noble depName=ca-certificates
+ARG CA_CERTS_VERSION="20240203"
+# renovate: suite=noble depName=libfreetype6
+ARG LIBFREETYPE6_VERSION="2.13.2+dfsg-1build3"
+
+# Install runtime packages only with pinned versions (optimized layer ordering - rarely changes)
 RUN apt-get update && apt-get install -y \
     # 32-bit library support for Steam/Proton
-    lib32gcc-s1 \
+    lib32gcc-s1=${LIB32GCC_VERSION} \
     # Core utilities
-    python3 \
-    wget \
-    tar \
-    unzip \
-    ca-certificates \
+    python3=${PYTHON3_VERSION} \
+    wget=${WGET_VERSION} \
+    tar=${TAR_VERSION} \
+    unzip=${UNZIP_VERSION} \
+    ca-certificates=${CA_CERTS_VERSION} \
     # ASA dependencies
-    libfreetype6 \
+    libfreetype6=${LIBFREETYPE6_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
 # Create gameserver user and group with specific UID/GID (rarely changes)

@@ -10,5 +10,17 @@
     ":disableRateLimiting",
     ":dependencyDashboard",
     "helpers:pinGitHubActionDigests"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Debian/Ubuntu apt package versions in Dockerfile ARG statements",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*suite=(?<suite>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\nARG\\s+[A-Z0-9_]+=\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "deb",
+      "registryUrlTemplate": "https://archive.ubuntu.com/ubuntu?suite={{suite}}&components=main,universe,multiverse,restricted&binaryArch=amd64"
+    }
   ]
 }
