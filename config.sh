@@ -1,10 +1,6 @@
 #!/bin/bash
-test -f /.kconfig && . /.kconfig
-test -f /.profile && . /.profile
-echo "Configure image: [$kiwi_iname]..."
-
-# Set default timezone
 rm -f /etc/localtime
+zypper --gpg-auto-import-keys ref
 
 groupmod -g 25000 gameserver
 usermod -u 25000 gameserver
@@ -25,5 +21,9 @@ else
 fi
 
 ln -s /usr/share/asa-ctrl/main.rb /usr/bin/asa-ctrl
+
+# This fixes a warning with Proton. The warning confused some people, but it haven't had any effect on the ASA server.
+echo "d5b7b5ed-1674-497d-ad98-7437a6543312" > /etc/machine-id
+chmod 644 /etc/machine-id
 
 exit 0
