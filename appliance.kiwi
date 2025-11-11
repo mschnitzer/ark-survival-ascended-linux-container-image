@@ -11,7 +11,7 @@
     <profile name="development" description="building docker tag: development"/>
   </profiles>
   <preferences>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
     <packagemanager>zypper</packagemanager>
     <rpm-excludedocs>true</rpm-excludedocs>
     <rpm-check-signatures>false</rpm-check-signatures>
@@ -66,30 +66,26 @@
     <package name="udev"/>
     <package name="filesystem"/>
     <package name="glibc-locale"/>
-    <package name="cracklib-dict-full"/>
+    <package name="cracklib-dict-small"/>
     <package name="ca-certificates"/>
     <package name="ca-certificates-mozilla"/>
-    <!-- somehow not available on Leap 16.0 -->
-    <!--package name="openSUSE-release"/-->
   </packages>
   <packages type="delete">
-    <package name="kernel-default"/>
     <package name="dbus-1"/>
-    <package name="fipscheck"/>
     <package name="kbd"/>
     <package name="kmod"/>
     <package name="ncurses-utils"/>
     <package name="pinentry"/>
-    <package name="btrfsprogs"/>
-    <package name="lvm2"/>
     <package name="udev"/>
-    <package name="dracut"/>
-    <package name="squashfs"/>
     <package name="glibc-locale"/>
+    <package name="systemd"/>
   </packages>
-  <packages type="delete" profiles="stable beta">
+  <packages type="delete" profiles="stable,beta">
     <package name="ruby3.4-devel"/>
     <package name="make"/>
     <package name="gcc-c++"/>
+    <package name="gcc15"/>
+    <package name="gcc15-c++"/>
+    <package name="libstdc++6-devel-gcc15"/>
   </packages>
 </image>
