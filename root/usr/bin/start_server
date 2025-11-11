@@ -8,7 +8,7 @@ fi
 # download steamcmd if necessary
 if [ ! -d "/home/gameserver/steamcmd/linux32" ]; then
   cd /home/gameserver/steamcmd
-	wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+  wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
   tar xfvz steamcmd_linux.tar.gz
 fi
 
@@ -82,5 +82,10 @@ if [ -f "$ASA_PLUGIN_BINARY_PATH" ]; then
   echo "Detected ASA Server API loader. Launching server through $ASA_PLUGIN_BINARY_NAME"
   LAUNCH_BINARY_NAME="$ASA_PLUGIN_BINARY_NAME"
 fi
+
+# Remove steamclient64.dll to prevent server from crashing.
+# File is not needed and was probably accidentally committed to Steam.
+# See: https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/issues/123
+rm -f /home/gameserver/server-files/ShooterGame/Binaries/Win64/steamclient64.dll
 
 $STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run $LAUNCH_BINARY_NAME $ASA_START_PARAMS
