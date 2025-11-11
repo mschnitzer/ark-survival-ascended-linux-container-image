@@ -9,15 +9,12 @@ prepare:
 
 build: prepare
 	- sudo kiwi-ng --profile stable --color-output --debug system build --target-dir $(TARGET_DIR) --description .
-	- sudo xz --threads 8 -z $(TARGET_DIR)/*.tar
 
 build-development: prepare
 	- sudo kiwi-ng --profile development --color-output --debug system build --target-dir $(TARGET_DIR) --description .
-	- sudo xz --threads 8 -z $(TARGET_DIR)/*.tar
 
 build-beta: prepare
 	- sudo kiwi-ng --profile beta --color-output --debug system build --target-dir $(TARGET_DIR) --description .
-	- sudo xz --threads 8 -z $(TARGET_DIR)/*.tar
 
 load:
 	- sudo docker load -i $(TARGET_DIR)/*.xz
