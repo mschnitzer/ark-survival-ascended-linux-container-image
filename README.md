@@ -41,7 +41,7 @@ This repository provides a step by step guide for Linux administrators to host A
 The hardware requirements might change over time, but as of today you can expect:
 
 * ~13 GB RAM usage per server instance
-* ~13 GB disk space (the server files alone, without any savegames)
+* ~11 GB disk space (the server files alone, without any savegames)
 
 I cannot tell you what CPU to use, as I didn't do any testing on this, but this is the hardware I'm running one ASA server on:
 
@@ -57,7 +57,7 @@ Required Linux experience: **Beginner**
 
 In theory, you can use these steps on any Linux system where Docker is installed. It has been tested with:
 
-* openSUSE Leap 15.6
+* openSUSE Leap 15.6 (>= 16.0 won't work due to missing 32bit support)
 * Debian 12 (bookworm)
 * **NOT WORKING:** Ubuntu 22.04.x LTS (Jammy Jellyfish) [As of March 28th 2025, a recent distro update causes the container to have a constant high CPU usage, well beyond 400% and the server won't launch. Use Ubuntu 24.04.x if you can]
 * Ubuntu 24.04.1 (Noble Numbat)
