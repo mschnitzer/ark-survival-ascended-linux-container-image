@@ -449,6 +449,7 @@ This is a list of all official map names with their map id. The map id is used a
 | Aberration | Aberration_WP |
 | Extinction | Extinction_WP |
 | Ragnarok | Ragnarok_WP |
+| Astraeos | Astraeos_WP |
 | Valguero | Valguero_WP |
 | Lost Colony | LostColony_WP |
 
