@@ -19,6 +19,7 @@ This repository provides a step by step guide for Linux administrators to host A
   * [Debug Mode](#debug-mode)
   * [Applying server updates](#applying-server-updates)
   * [Daily restarts](#daily-restarts)
+  * [Restarts during play time](#restarts-during-play-time)
   * [Executing RCON commands](#executing-rcon-commands)
 * [Setting up a second server / cluster](#setting-up-a-second-server--cluster)
 * [Adding Mods](#adding-mods)
@@ -338,6 +339,18 @@ Explanation:
 Read more about the crontab syntax [here](https://www.adminschoice.com/crontab-quick-reference).
 
 **NOTE:** The first 4 lines execute RCON commands, which requires you to have a working RCON setup. Please follow the instructions in section "[Executing RCON commands](#executing-rcon-commands)" to
+ensure you can execute RCON commands.
+
+### Restarts during play time
+If server updates should be applied during play time, feel free to checkout the utility script under `util/check_ASAserver_update.sh`. In case a server update is detected with `steamcmd`, the server is restarted during play time after a specified grace period. It will be restarted immediately if no player is online.
+The script should be executed on the docker host system and needs two parameters:
+* `-s` for the server's container name, i. e. `asa-server-1`
+* `-g` for the grace period
+
+For more details see `./util/check_ASAserver_update.sh --help`.
+
+**NOTE1:** Similar to setup in [Daily restarts](#daily-restarts), a crontab configuration can be set up to check for updates periodically. Keep in mind to choose greater intervals of your crontab compared to your grace period.
+**NOTE2:** The script requires a working RCON setup in order to check for online players. Please follow the instructions in section "[Executing RCON commands](#executing-rcon-commands)" to
 ensure you can execute RCON commands.
 
 ### Executing RCON commands
