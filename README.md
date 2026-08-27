@@ -452,6 +452,7 @@ This is a list of all official map names with their map id. The map id is used a
 | Astraeos | Astraeos_WP |
 | Valguero | Valguero_WP |
 | Lost Colony | LostColony_WP |
+| Genesis 1 | Genesis_WP |
 
 **NOTE:** Mod Maps have their own id! ([click](#adding-mod-maps))
 
