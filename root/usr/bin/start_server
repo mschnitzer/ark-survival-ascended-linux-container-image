@@ -88,4 +88,36 @@ fi
 # See: https://github.com/mschnitzer/ark-survival-ascended-linux-container-image/issues/123
 rm -f /home/gameserver/server-files/ShooterGame/Binaries/Win64/steamclient64.dll
 
+ASA_LOG_FILE="/home/gameserver/server-files/ShooterGame/Saved/Logs/ShooterGame.log"
+
+echo "Forwarding ARK server log to container stdout..."
+
+case "${SERVER_LOG_MODE:-none}" in
+  all)
+    echo "Forwarding full ARK server log to container stdout..."
+    tail -n 0 --retry -F "$ASA_LOG_FILE" &
+    TAIL_PID=$!
+    ;;
+
+  ready)
+    echo "Waiting for ARK server startup completion message..."
+    tail -n 0 --retry -F "$ASA_LOG_FILE" \
+      | grep --line-buffered -F "Server has completed startup and is now advertising for join." &
+    TAIL_PID=$!
+    ;;
+
+  none)
+    echo "ARK server log forwarding disabled."
+    ;;
+
+  *)
+    echo "Warning: invalid SERVER_LOG_MODE='$SERVER_LOG_MODE'. Expected: none, ready, all."
+    echo "ARK server log forwarding disabled."
+    ;;
+esac
+
 $STEAM_COMPAT_DIR/$PROTON_DIR_NAME/proton run $LAUNCH_BINARY_NAME $ASA_START_PARAMS
+
+if [ -n "${TAIL_PID:-}" ]; then
+  kill "$TAIL_PID" 2>/dev/null || true
+fi
